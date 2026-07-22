@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Figtree:wght@400;600;700&display=swap">
+<style>
+  body{margin:0}
+  a{color:#c67139;text-underline-offset:3px}
+  a:hover{color:#8c491a}
+  input::placeholder{color:rgba(32,30,29,0.45)}
+  select{appearance:none}
+</style>
+</helmet>
+<div style="--color-bg:#f5ead8;--color-surface:#ebddc5;--color-text:#201e1d;--color-accent:#c67139;--color-accent-100:#fff2eb;--color-accent-200:#ffe1d0;--color-accent-300:#ffc6a5;--color-accent-600:#b2622d;--color-accent-700:#8c491a;--color-accent-800:#643312;--color-accent-2-100:#f0fae1;--color-accent-2-800:#3d472b;--color-neutral-100:#f9f4ed;--color-neutral-200:#eee7db;--color-neutral-300:#dcd3c4;--color-neutral-600:#82796a;--color-neutral-700:#645c50;--color-divider:rgba(32,30,29,0.16);--font-heading:'Caprasimo',system-ui,sans-serif;--font-body:'Figtree',system-ui,sans-serif;background:var(--color-neutral-300);color:var(--color-text);font-family:var(--font-body);min-height:100vh;display:flex;justify-content:center">
+  <div style="width:100%;max-width:480px;min-height:100vh;display:flex;flex-direction:column;position:relative;background:var(--color-bg)">
+
+    <sc-if value="{{ isGate }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="Sign In" style="display:flex;flex-direction:column;align-items:center;padding:48px 24px 32px;gap:22px;text-align:center;flex:1">
+      <div style="width:112px;height:112px;border-radius:50%;background:repeating-linear-gradient(45deg,var(--color-accent-200),var(--color-accent-200) 8px,var(--color-accent-100) 8px,var(--color-accent-100) 16px);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(46,43,37,0.16)">
+        <span style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-accent-700);background:var(--color-bg);padding:4px 8px;border-radius:999px">group photo</span>
+      </div>
+      <div>
+        <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:8px">Riverside High &middot; Batch of 2011</div>
+        <h1 style="font-family:var(--font-heading);font-size:32px;margin:0 0 8px;line-height:1.1">Fifteen Years Later</h1>
+        <p style="margin:0;font-size:14px;opacity:0.75;max-width:300px">Find your name below to RSVP, check your payment status, and see who's coming home.</p>
+      </div>
+      <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:14px;text-align:left">
+        <div>
+          <label style="display:block;font-size:12px;margin-bottom:5px;color:rgba(32,30,29,0.7)">Your name</label>
+          <select value="{{ selectedMemberId }}" onChange="{{ onSelectMember }}" style="width:100%;min-height:46px;padding:6px 16px;font:inherit;font-size:15px;color:var(--color-text);background:var(--color-surface);border:1px solid var(--color-divider);border-radius:999px">
+            <option value="">Choose your name&hellip;</option>
+            <sc-for list="{{ members }}" as="m" hint-placeholder-count="5">
+              <option value="{{ m.id }}">{{ m.name }}</option>
+            </sc-for>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;margin-bottom:5px;color:rgba(32,30,29,0.7)">Last 4 digits of your phone</label>
+          <input value="{{ phoneInput }}" onChange="{{ onPhoneChange }}" placeholder="e.g. 4821" maxlength="4" inputmode="numeric" style="width:100%;min-height:46px;padding:6px 16px;font:inherit;font-size:15px;color:var(--color-text);background:var(--color-surface);border:1px solid var(--color-divider);border-radius:999px"></input>
+        </div>
+        <sc-if value="{{ gateError }}">
+          <div style="font-size:13px;color:var(--color-accent-700)">{{ gateError }}</div>
+        </sc-if>
+        <button onClick="{{ onContinue }}" style="margin-top:2px;width:100%;min-height:50px;border:none;border-radius:999px;background:var(--color-accent);color:var(--color-bg);font-family:var(--font-heading);font-size:15px;cursor:pointer">Continue</button>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ !isGate }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;flex:1">
+
+      <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;position:sticky;top:0;background:var(--color-bg);z-index:5;border-bottom:1px solid var(--color-divider)">
+        <div style="font-family:var(--font-heading);font-size:18px">Batch of 2011</div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+          <sc-if value="{{ adminUnlocked }}">
+            <span style="font-size:11px;padding:5px 12px;border-radius:999px;background:var(--color-accent-2-100);color:var(--color-accent-2-800)">Organizer</span>
+          </sc-if>
+          <sc-if value="{{ !adminUnlocked }}">
+            <button onClick="{{ openPin }}" style="background:transparent;border:none;color:var(--color-accent);font-family:var(--font-body);font-size:13px;cursor:pointer;padding:4px 6px">Organizer sign-in</button>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;padding:20px 20px 24px">
+
+        <sc-if value="{{ screenHome }}">
+        <div data-screen-label="Home">
+          <div style="background:var(--color-surface);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:5px;margin-bottom:14px">
+            <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">The reunion</div>
+            <div style="font-family:var(--font-heading);font-size:20px">Saturday, Dec 20, 2026</div>
+            <div style="font-size:13px;opacity:0.8">6:00 PM &middot; The Garden Terrace, Riverside Club</div>
+          </div>
+
+          <div style="background:var(--color-surface);border-radius:22px;padding:18px;margin-bottom:14px">
+            <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent);margin-bottom:10px">Your RSVP, {{ currentUserFirstName }}</div>
+            <div style="display:flex;gap:8px">
+              <sc-if value="{{ rsvpIsYes }}">
+                <button onClick="{{ rsvpYes }}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid transparent;background:var(--color-accent);color:var(--color-bg);font-family:var(--font-body);font-weight:600;font-size:14px;cursor:pointer">I'll be there</button>
+              </sc-if>
+              <sc-if value="{{ !rsvpIsYes }}">
+                <button onClick="{{ rsvpYes }}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid var(--color-divider);background:transparent;color:var(--color-text);font-family:var(--font-body);font-size:14px;cursor:pointer">I'll be there</button>
+              </sc-if>
+              <sc-if value="{{ rsvpIsNo }}">
+                <button onClick="{{ rsvpNo }}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid transparent;background:var(--color-neutral-600);color:var(--color-bg);font-family:var(--font-body);font-weight:600;font-size:14px;cursor:pointer">Can't make it</button>
+              </sc-if>
+              <sc-if value="{{ !rsvpIsNo }}">
+                <button onClick="{{ rsvpNo }}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid var(--color-divider);background:transparent;color:var(--color-text);font-family:var(--font-body);font-size:14px;cursor:pointer">Can't make it</button>
+              </sc-if>
+            </div>
+          </div>
+
+          <div style="background:var(--color-surface);border-radius:22px;padding:18px;margin-bottom:14px;display:flex;flex-direction:column;gap:10px">
+            <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Your contribution</div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="font-family:var(--font-heading);font-size:22px">{{ contributionFmt }}</div>
+              <sc-if value="{{ currentUserPaid }}">
+                <span style="font-size:11px;padding:5px 12px;border-radius:999px;background:var(--color-accent-2-100);color:var(--color-accent-2-800)">Paid</span>
+              </sc-if>
+              <sc-if value="{{ !currentUserPaid }}">
+                <span style="font-size:11px;padding:5px 12px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-neutral-700)">Unpaid</span>
+              </sc-if>
+            </div>
+            <sc-if value="{{ !currentUserPaid }}">
+              <div style="font-size:13px;opacity:0.8">Pay via UPI, then let an organizer know so they can mark you paid.</div>
+              <div style="display:flex;align-items:center;gap:8px;background:var(--color-bg);border-radius:999px;padding:8px 8px 8px 16px">
+                <code style="font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ upiId }}</code>
+                <button onClick="{{ copyUpi }}" style="border:none;border-radius:999px;background:var(--color-accent);color:var(--color-bg);font-size:12px;padding:9px 14px;cursor:pointer;font-family:var(--font-body);white-space:nowrap">{{ copyLabel }}</button>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="margin-bottom:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <div style="font-family:var(--font-heading);font-size:16px">{{ attendingCount }} classmates coming</div>
+              <button onClick="{{ goAttendees }}" style="background:transparent;border:none;color:var(--color-accent);font-size:13px;cursor:pointer;padding:0">See all &rarr;</button>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ attendingPreview }}" as="m" hint-placeholder-count="6">
+                <span style="font-size:12px;padding:6px 12px;border-radius:999px;background:var(--color-neutral-100);color:var(--color-neutral-700)">{{ m.name }}</span>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="background:var(--color-accent-100);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:9px">
+            <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent-700)">Reunion budget</div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span>Collected</span><span style="font-family:var(--font-heading)">{{ totalCollectedFmt }}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span>Spent</span><span style="font-family:var(--font-heading)">{{ totalExpensesFmt }}</span></div>
+            <div style="height:1px;background:rgba(198,113,57,0.3)"></div>
+            <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600"><span>Balance</span><span>{{ balanceFmt }}</span></div>
+            <button onClick="{{ goExpenses }}" style="align-self:flex-start;background:transparent;border:none;color:var(--color-accent-700);font-size:13px;font-family:var(--font-body);cursor:pointer;padding:0;text-decoration:underline">See full expense tracker &rarr;</button>
+          </div>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ screenAttendees }}">
+        <div data-screen-label="Attendees">
+          <div style="display:flex;gap:10px;margin-bottom:16px">
+            <div style="flex:1;background:var(--color-surface);border-radius:16px;padding:12px;text-align:center">
+              <div style="font-family:var(--font-heading);font-size:19px">{{ attendingCount }}</div>
+              <div style="font-size:10px;opacity:0.65;text-transform:uppercase;letter-spacing:0.06em">Coming</div>
+            </div>
+            <div style="flex:1;background:var(--color-surface);border-radius:16px;padding:12px;text-align:center">
+              <div style="font-family:var(--font-heading);font-size:19px">{{ paidCount }}</div>
+              <div style="font-size:10px;opacity:0.65;text-transform:uppercase;letter-spacing:0.06em">Paid</div>
+            </div>
+            <div style="flex:1;background:var(--color-surface);border-radius:16px;padding:12px;text-align:center">
+              <div style="font-family:var(--font-heading);font-size:19px">{{ totalMembers }}</div>
+              <div style="font-size:10px;opacity:0.65;text-transform:uppercase;letter-spacing:0.06em">Total</div>
+            </div>
+          </div>
+          <input value="{{ attendeeSearch }}" onChange="{{ onSearchChange }}" placeholder="Search classmates" style="width:100%;min-height:44px;padding:6px 16px;font:inherit;font-size:14px;color:var(--color-text);background:var(--color-surface);border:1px solid var(--color-divider);border-radius:999px;margin-bottom:14px"></input>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ filteredMembers }}" as="m" hint-placeholder-count="10">
+              <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--color-surface);border-radius:16px">
+                <div style="width:34px;height:34px;border-radius:50%;background:var(--color-neutral-200);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:13px;color:var(--color-neutral-700);flex:none">{{ m.initial }}</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ m.name }}</div>
+                  <div style="font-size:11px;opacity:0.6">{{ m.rsvpLabel }}</div>
+                </div>
+                <sc-if value="{{ adminUnlocked }}">
+                  <sc-if value="{{ m.paid }}">
+                    <button onClick="{{ m.togglePaid }}" style="border:none;font-size:11px;padding:6px 12px;border-radius:999px;background:var(--color-accent-2-100);color:var(--color-accent-2-800);cursor:pointer;white-space:nowrap">Paid</button>
+                  </sc-if>
+                  <sc-if value="{{ !m.paid }}">
+                    <button onClick="{{ m.togglePaid }}" style="border:none;font-size:11px;padding:6px 12px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-neutral-700);cursor:pointer;white-space:nowrap">Mark paid</button>
+                  </sc-if>
+                </sc-if>
+                <sc-if value="{{ !adminUnlocked }}">
+                  <sc-if value="{{ m.paid }}">
+                    <span style="font-size:11px;padding:6px 12px;border-radius:999px;background:var(--color-accent-2-100);color:var(--color-accent-2-800);white-space:nowrap">Paid</span>
+                  </sc-if>
+                  <sc-if value="{{ !m.paid }}">
+                    <span style="font-size:11px;padding:6px 12px;border-radius:999px;background:var(--color-neutral-200);color:var(--color-neutral-700);white-space:nowrap">Unpaid</span>
+                  </sc-if>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ screenExpenses }}">
+        <div data-screen-label="Expenses">
+          <div style="background:var(--color-accent-100);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:9px;margin-bottom:18px">
+            <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent-700)">Reunion budget</div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span>Collected</span><span style="font-family:var(--font-heading)">{{ totalCollectedFmt }}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span>Spent</span><span style="font-family:var(--font-heading)">{{ totalExpensesFmt }}</span></div>
+            <div style="height:1px;background:rgba(198,113,57,0.3)"></div>
+            <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600"><span>Balance</span><span>{{ balanceFmt }}</span></div>
+          </div>
+
+          <div style="font-family:var(--font-heading);font-size:16px;margin-bottom:10px">By category</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+            <sc-for list="{{ categoryBreakdown }}" as="c" hint-placeholder-count="4">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>{{ c.category }}</span><span style="opacity:0.7">{{ c.totalFmt }}</span></div>
+                <div style="height:6px;border-radius:999px;background:var(--color-neutral-200);overflow:hidden">
+                  <div style="height:100%;border-radius:999px;background:var(--color-accent);width:{{ c.barWidthPct }}%"></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div style="font-family:var(--font-heading);font-size:16px">All expenses</div>
+            <sc-if value="{{ adminUnlocked }}">
+              <button onClick="{{ openAddExpense }}" style="border:none;border-radius:999px;background:var(--color-accent);color:var(--color-bg);font-size:12px;padding:8px 14px;cursor:pointer;font-family:var(--font-body)">+ Add expense</button>
+            </sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+            <sc-for list="{{ expenseItems }}" as="e" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--color-surface);border-radius:16px">
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.description }}</div>
+                  <div style="font-size:11px;opacity:0.6">{{ e.category }} &middot; {{ e.date }}</div>
+                </div>
+                <div style="font-size:14px;font-family:var(--font-heading);white-space:nowrap">{{ e.amountFmt }}</div>
+                <sc-if value="{{ adminUnlocked }}">
+                  <button onClick="{{ e.startEdit }}" style="border:none;background:transparent;color:var(--color-accent);font-size:12px;cursor:pointer;padding:4px 2px;text-decoration:underline;white-space:nowrap">Edit</button>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ !adminUnlocked }}">
+            <div style="text-align:center;padding:14px;font-size:13px;opacity:0.65">
+              Only organizers can log expenses.
+              <button onClick="{{ openPin }}" style="background:transparent;border:none;color:var(--color-accent);font-size:13px;cursor:pointer;padding:0;text-decoration:underline">Unlock organizer access</button>
+            </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+      </div>
+
+      <div style="position:sticky;bottom:0;display:flex;background:var(--color-bg);border-top:1px solid var(--color-divider);padding:10px 16px 14px;z-index:5">
+        <sc-if value="{{ screenHome }}">
+          <button onClick="{{ goHome }}" style="flex:1;border:none;background:transparent;color:var(--color-accent-700);font-family:var(--font-body);font-weight:700;font-size:13px;padding:6px;cursor:pointer">Home</button>
+        </sc-if>
+        <sc-if value="{{ !screenHome }}">
+          <button onClick="{{ goHome }}" style="flex:1;border:none;background:transparent;color:var(--color-text);opacity:0.55;font-family:var(--font-body);font-size:13px;padding:6px;cursor:pointer">Home</button>
+        </sc-if>
+        <sc-if value="{{ screenAttendees }}">
+          <button onClick="{{ goAttendees }}" style="flex:1;border:none;background:transparent;color:var(--color-accent-700);font-family:var(--font-body);font-weight:700;font-size:13px;padding:6px;cursor:pointer">Attendees</button>
+        </sc-if>
+        <sc-if value="{{ !screenAttendees }}">
+          <button onClick="{{ goAttendees }}" style="flex:1;border:none;background:transparent;color:var(--color-text);opacity:0.55;font-family:var(--font-body);font-size:13px;padding:6px;cursor:pointer">Attendees</button>
+        </sc-if>
+        <sc-if value="{{ screenExpenses }}">
+          <button onClick="{{ goExpenses }}" style="flex:1;border:none;background:transparent;color:var(--color-accent-700);font-family:var(--font-body);font-weight:700;font-size:13px;padding:6px;cursor:pointer">Expenses</button>
+        </sc-if>
+        <sc-if value="{{ !screenExpenses }}">
+          <button onClick="{{ goExpenses }}" style="flex:1;border:none;background:transparent;color:var(--color-text);opacity:0.55;font-family:var(--font-body);font-size:13px;padding:6px;cursor:pointer">Expenses</button>
+        </sc-if>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ pinDialogOpen }}">
+      <div style="position:fixed;inset:0;display:grid;place-items:center;padding:20px;background:rgba(46,43,37,0.5);z-index:30">
+        <div style="width:min(360px,100%);display:flex;flex-direction:column;gap:14px;padding:22px;border-radius:26px;background:var(--color-surface);box-shadow:0 12px 32px rgba(46,43,37,0.22)">
+          <div style="font-family:var(--font-heading);font-size:19px">Organizer sign-in</div>
+          <div style="font-size:13px;opacity:0.75">Enter the shared organizer PIN to mark payments and log expenses.</div>
+          <input value="{{ pinInput }}" onChange="{{ onPinChange }}" placeholder="PIN" inputmode="numeric" type="password" style="width:100%;min-height:44px;padding:6px 16px;font:inherit;font-size:15px;color:var(--color-text);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:999px"></input>
+          <sc-if value="{{ pinError }}">
+            <div style="font-size:13px;color:var(--color-accent-700)">{{ pinError }}</div>
+          </sc-if>
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:2px">
+            <button onClick="{{ closePin }}" style="border:1px solid var(--color-divider);border-radius:999px;background:transparent;color:var(--color-text);font-size:13px;padding:9px 16px;cursor:pointer;font-family:var(--font-body)">Cancel</button>
+            <button onClick="{{ submitPin }}" style="border:none;border-radius:999px;background:var(--color-accent);color:var(--color-bg);font-size:13px;padding:9px 16px;cursor:pointer;font-family:var(--font-body)">Unlock</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ addExpenseOpen }}">
+      <div style="position:fixed;inset:0;display:grid;place-items:center;padding:20px;background:rgba(46,43,37,0.5);z-index:30">
+        <div style="width:min(420px,100%);display:flex;flex-direction:column;gap:14px;padding:22px;border-radius:26px;background:var(--color-surface);box-shadow:0 12px 32px rgba(46,43,37,0.22)">
+          <sc-if value="{{ isEditingExpense }}">
+            <div style="font-family:var(--font-heading);font-size:19px">Edit expense</div>
+          </sc-if>
+          <sc-if value="{{ !isEditingExpense }}">
+            <div style="font-family:var(--font-heading);font-size:19px">Log an expense</div>
+          </sc-if>
+          <div>
+            <label style="display:block;font-size:12px;margin-bottom:5px;color:rgba(32,30,29,0.7)">Category</label>
+            <select value="{{ expForm.category }}" onChange="{{ onExpCategoryChange }}" style="width:100%;min-height:44px;padding:6px 16px;font:inherit;font-size:14px;color:var(--color-text);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:999px">
+              <option>Venue</option>
+              <option>Catering</option>
+              <option>Decor</option>
+              <option>Entertainment</option>
+              <option>Photography</option>
+              <option>Miscellaneous</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;margin-bottom:5px;color:rgba(32,30,29,0.7)">Description</label>
+            <input value="{{ expForm.description }}" onChange="{{ onExpDescChange }}" placeholder="e.g. Deposit for hall" style="width:100%;min-height:44px;padding:6px 16px;font:inherit;font-size:14px;color:var(--color-text);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:999px"></input>
+          </div>
+          <div>
+            <label style="display:block;font-size:12px;margin-bottom:5px;color:rgba(32,30,29,0.7)">Amount (&#8377;)</label>
+            <input value="{{ expForm.amount }}" onChange="{{ onExpAmountChange }}" placeholder="0" inputmode="numeric" style="width:100%;min-height:44px;padding:6px 16px;font:inherit;font-size:14px;color:var(--color-text);background:var(--color-bg);border:1px solid var(--color-divider);border-radius:999px"></input>
+          </div>
+          <sc-if value="{{ expError }}">
+            <div style="font-size:13px;color:var(--color-accent-700)">{{ expError }}</div>
+          </sc-if>
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:2px">
+            <button onClick="{{ closeAddExpense }}" style="border:1px solid var(--color-divider);border-radius:999px;background:transparent;color:var(--color-text);font-size:13px;padding:9px 16px;cursor:pointer;font-family:var(--font-body)">Cancel</button>
+            <button onClick="{{ submitExpense }}" style="border:none;border-radius:999px;background:var(--color-accent);color:var(--color-bg);font-size:13px;padding:9px 16px;cursor:pointer;font-family:var(--font-body)">{{ submitExpenseLabel }}</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;contributionAmount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3000,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:500,&quot;max&quot;:10000,&quot;step&quot;:500},&quot;adminPin&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;2011&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const NAMES = ["Aditi Sharma","Rohan Mehta","Priya Nair","Karan Bhatt","Sneha Iyer","Vikram Rao","Anjali Desai","Farhan Sheikh","Meera Pillai","Arjun Kapoor","Divya Menon","Sameer Khan","Neha Joshi","Rahul Verma","Pooja Reddy","Aman Gupta","Ritu Chawla","Sanjay Bhat","Kavita Iyengar","Manoj Tiwari","Shalini Rao","Deepak Malhotra","Nisha Kulkarni","Vivek Choudhary","Swati Agarwal","Rajesh Pillai","Tanvi Shah","Gaurav Saxena","Ishita Bose","Nikhil Bansal","Preeti Menon","Suresh Naidu","Ananya Krishnan","Vinay Kumar","Radhika Suri","Harish Chandran","Simran Kaur","Abhishek Rana","Lakshmi Venkat","Yash Thakur","Kritika Sood","Om Prakash","Bhavna Dutta","Ravi Shankar","Anusha Rangan","Tarun Oberoi","Meghna Vora","Siddharth Jain","Ruchika Bhatia","Ajay Nambiar","Payal Sethi","Kunal Dsouza","Namrata Pandey","Rohit Kapadia","Isha Trivedi","Varun Chatterjee","Sonal Mistry","Pranav Acharya","Geeta Ramaswamy","Naveen Bhandari"];
+const RSVP_PATTERN = ["yes","yes","pending","yes","no"];
+const EXPENSES_SEED = [
+  {category:"Venue", description:"Garden Terrace hall deposit", amount:45000, date:"Mar 2026"},
+  {category:"Catering", description:"Dinner for 60, buffet", amount:60000, date:"May 2026"},
+  {category:"Decor", description:"Stage backdrop & florals", amount:12000, date:"Jun 2026"},
+  {category:"Entertainment", description:"DJ & sound system", amount:15000, date:"Jun 2026"},
+  {category:"Photography", description:"Event photographer", amount:10000, date:"Jun 2026"},
+  {category:"Decor", description:"Printed banners", amount:4000, date:"Jun 2026"},
+  {category:"Miscellaneous", description:"Return gifts", amount:9000, date:"Jul 2026"},
+  {category:"Miscellaneous", description:"Class yearbook printing", amount:7000, date:"Jul 2026"}
+];
+function buildMembers() {
+  return NAMES.map((name, i) => {
+    const rsvp = RSVP_PATTERN[i % 5];
+    return {
+      id: i + 1,
+      name,
+      phoneLast4: String(1000 + ((i * 137 + 53) % 9000)),
+      rsvp,
+      paid: rsvp === "yes" && (i % 3 !== 0)
+    };
+  });
+}
+function formatINR(n) { return "\u20b9" + Math.round(n).toLocaleString("en-IN"); }
+
+class Component extends DCLogic {
+  state = {
+    screen: "gate",
+    selectedMemberId: "",
+    phoneInput: "",
+    gateError: "",
+    currentUserId: null,
+    adminUnlocked: false,
+    pinDialogOpen: false,
+    pinInput: "",
+    pinError: "",
+    attendeeSearch: "",
+    copyLabel: "Copy",
+    addExpenseOpen: false,
+    editingExpenseId: null,
+    expForm: { category: "Venue", description: "", amount: "" },
+    expError: "",
+    members: buildMembers(),
+    expenses: EXPENSES_SEED.map((e, i) => ({ id: i + 1, ...e }))
+  };
+
+  onSelectMember = (e) => this.setState({ selectedMemberId: e.target.value, gateError: "" });
+  onPhoneChange = (e) => this.setState({ phoneInput: e.target.value.replace(/\D/g, "").slice(0, 4), gateError: "" });
+  onContinue = () => {
+    const { selectedMemberId, phoneInput, members } = this.state;
+    if (!selectedMemberId) { this.setState({ gateError: "Pick your name from the list." }); return; }
+    const member = members.find((m) => String(m.id) === String(selectedMemberId));
+    if (!member || phoneInput !== member.phoneLast4) { this.setState({ gateError: "Those last 4 digits don't match our records." }); return; }
+    this.setState({ currentUserId: member.id, screen: "home", gateError: "" });
+  };
+
+  goHome = () => this.setState({ screen: "home" });
+  goAttendees = () => this.setState({ screen: "attendees" });
+  goExpenses = () => this.setState({ screen: "expenses" });
+
+  rsvpYes = () => this.setState((s) => ({ members: s.members.map((m) => (m.id === s.currentUserId ? { ...m, rsvp: "yes" } : m)) }));
+  rsvpNo = () => this.setState((s) => ({ members: s.members.map((m) => (m.id === s.currentUserId ? { ...m, rsvp: "no" } : m)) }));
+
+  copyUpi = () => {
+    navigator.clipboard?.writeText("reunion2011@okhdfcbank").catch(() => {});
+    this.setState({ copyLabel: "Copied" });
+    clearTimeout(this._copyTimer);
+    this._copyTimer = setTimeout(() => this.setState({ copyLabel: "Copy" }), 1500);
+  };
+
+  openPin = () => this.setState({ pinDialogOpen: true, pinInput: "", pinError: "" });
+  closePin = () => this.setState({ pinDialogOpen: false });
+  onPinChange = (e) => this.setState({ pinInput: e.target.value, pinError: "" });
+  submitPin = () => {
+    const pin = this.props.adminPin ?? "2011";
+    if (this.state.pinInput === pin) this.setState({ adminUnlocked: true, pinDialogOpen: false });
+    else this.setState({ pinError: "That PIN isn't right — check with an organizer." });
+  };
+
+  onSearchChange = (e) => this.setState({ attendeeSearch: e.target.value });
+  togglePaid = (id) => {
+    if (!this.state.adminUnlocked) return;
+    this.setState((s) => ({ members: s.members.map((m) => (m.id === id ? { ...m, paid: !m.paid } : m)) }));
+  };
+
+  openAddExpense = () => this.setState({ addExpenseOpen: true, editingExpenseId: null, expForm: { category: "Venue", description: "", amount: "" }, expError: "" });
+  startEditExpense = (item) => this.setState({ addExpenseOpen: true, editingExpenseId: item.id, expForm: { category: item.category, description: item.description, amount: String(item.amount) }, expError: "" });
+  closeAddExpense = () => this.setState({ addExpenseOpen: false, editingExpenseId: null });
+  onExpCategoryChange = (e) => this.setState((s) => ({ expForm: { ...s.expForm, category: e.target.value } }));
+  onExpDescChange = (e) => this.setState((s) => ({ expForm: { ...s.expForm, description: e.target.value } }));
+  onExpAmountChange = (e) => this.setState((s) => ({ expForm: { ...s.expForm, amount: e.target.value.replace(/\D/g, "") } }));
+  submitExpense = () => {
+    const { expForm, expenses, editingExpenseId } = this.state;
+    const amount = parseInt(expForm.amount, 10);
+    if (!expForm.description.trim()) { this.setState({ expError: "Add a short description." }); return; }
+    if (!amount || amount <= 0) { this.setState({ expError: "Enter an amount greater than zero." }); return; }
+    if (editingExpenseId) {
+      const updated = expenses.map((e) => (e.id === editingExpenseId ? { ...e, category: expForm.category, description: expForm.description.trim(), amount } : e));
+      this.setState({ expenses: updated, addExpenseOpen: false, editingExpenseId: null });
+    } else {
+      const entry = { id: Date.now(), category: expForm.category, description: expForm.description.trim(), amount, date: "Today" };
+      this.setState({ expenses: [entry, ...expenses], addExpenseOpen: false });
+    }
+  };
+
+  renderVals() {
+    const s = this.state;
+    const contributionAmount = this.props.contributionAmount ?? 3000;
+    const currentUser = s.members.find((m) => m.id === s.currentUserId) || null;
+    const rsvpLabelOf = (r) => (r === "yes" ? "Coming" : r === "no" ? "Not coming" : "No response yet");
+
+    const attendingCount = s.members.filter((m) => m.rsvp === "yes").length;
+    const paidCount = s.members.filter((m) => m.paid).length;
+    const totalMembers = s.members.length;
+    const totalCollected = paidCount * contributionAmount;
+    const totalExpenses = s.expenses.reduce((sum, e) => sum + e.amount, 0);
+    const balance = totalCollected - totalExpenses;
+
+    const search = s.attendeeSearch.trim().toLowerCase();
+    const filteredMembers = s.members
+      .filter((m) => !search || m.name.toLowerCase().includes(search))
+      .map((m) => ({ ...m, initial: m.name.charAt(0), rsvpLabel: rsvpLabelOf(m.rsvp), togglePaid: () => this.togglePaid(m.id) }));
+
+    const catTotals = {};
+    s.expenses.forEach((e) => { catTotals[e.category] = (catTotals[e.category] || 0) + e.amount; });
+    const maxCat = Math.max(1, ...Object.values(catTotals));
+    const categoryBreakdown = Object.entries(catTotals)
+      .sort((a, b) => b[1] - a[1])
+      .map(([category, total]) => ({ category, totalFmt: formatINR(total), barWidthPct: Math.round((total / maxCat) * 100) }));
+
+    const expenseItems = s.expenses.map((e) => ({ ...e, amountFmt: formatINR(e.amount), startEdit: () => this.startEditExpense(e) }));
+
+    return {
+      isGate: s.screen === "gate",
+      screenHome: s.screen === "home",
+      screenAttendees: s.screen === "attendees",
+      screenExpenses: s.screen === "expenses",
+      members: s.members,
+      selectedMemberId: s.selectedMemberId,
+      phoneInput: s.phoneInput,
+      gateError: s.gateError,
+      onSelectMember: this.onSelectMember,
+      onPhoneChange: this.onPhoneChange,
+      onContinue: this.onContinue,
+      goHome: this.goHome, goAttendees: this.goAttendees, goExpenses: this.goExpenses,
+      adminUnlocked: s.adminUnlocked,
+      openPin: this.openPin, closePin: this.closePin, submitPin: this.submitPin, onPinChange: this.onPinChange,
+      pinDialogOpen: s.pinDialogOpen, pinInput: s.pinInput, pinError: s.pinError,
+      currentUserFirstName: currentUser ? currentUser.name.split(" ")[0] : "",
+      rsvpIsYes: !!currentUser && currentUser.rsvp === "yes",
+      rsvpIsNo: !!currentUser && currentUser.rsvp === "no",
+      rsvpYes: this.rsvpYes, rsvpNo: this.rsvpNo,
+      currentUserPaid: !!currentUser && currentUser.paid,
+      contributionFmt: formatINR(contributionAmount),
+      upiId: "reunion2011@okhdfcbank",
+      copyUpi: this.copyUpi, copyLabel: s.copyLabel,
+      attendingCount, paidCount, totalMembers,
+      attendingPreview: s.members.filter((m) => m.rsvp === "yes").slice(0, 8),
+      totalCollectedFmt: formatINR(totalCollected),
+      totalExpensesFmt: formatINR(totalExpenses),
+      balanceFmt: formatINR(balance),
+      attendeeSearch: s.attendeeSearch, onSearchChange: this.onSearchChange,
+      filteredMembers,
+      categoryBreakdown,
+      expenseItems,
+      addExpenseOpen: s.addExpenseOpen, expForm: s.expForm, expError: s.expError,
+      isEditingExpense: !!s.editingExpenseId,
+      submitExpenseLabel: s.editingExpenseId ? "Save changes" : "Add expense",
+      openAddExpense: this.openAddExpense, closeAddExpense: this.closeAddExpense,
+      onExpCategoryChange: this.onExpCategoryChange, onExpDescChange: this.onExpDescChange, onExpAmountChange: this.onExpAmountChange,
+      submitExpense: this.submitExpense
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "school-reunion",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "wrangler pages dev public",
+    "deploy": "wrangler pages deploy",
+    "db:create": "wrangler d1 create reunion-db",
+    "db:schema:local": "wrangler d1 execute reunion-db --local --file=./schema.sql",
+    "db:schema:remote": "wrangler d1 execute reunion-db --remote --file=./schema.sql",
+    "db:seed:local": "wrangler d1 execute reunion-db --local --file=./seed.sql",
+    "db:backup": "wrangler d1 export reunion-db --remote --output=reunion-backup.sqlite"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

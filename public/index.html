@@ -1,0 +1,1700 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Reunion</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%8E%93</text></svg>">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --bg: #f5ead8;
+    --surface: #ebddc5;
+    --text: #201e1d;
+    --accent: #ffa31a;
+    --accent-100: #fff3e0;
+    --accent-200: #ffe0ad;
+    --accent-700: #a35d00;
+    --accent-800: #703f00;
+    --good-100: #f0fae1;
+    --good-800: #3d472b;
+    --neutral-100: #f9f4ed;
+    --neutral-200: #eee7db;
+    --neutral-300: #dcd3c4;
+    --neutral-600: #82796a;
+    --neutral-700: #645c50;
+    --divider: rgba(32, 30, 29, 0.16);
+    --page-bg: #dcd3c4;
+    --shadow: 0 12px 32px rgba(46, 43, 37, 0.22);
+    --placeholder: rgba(32, 30, 29, 0.45);
+    --font-heading: 'Caprasimo', system-ui, sans-serif;
+    --font-body: 'Figtree', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #211c16;
+      --surface: #2c2519;
+      --text: #f2ebe0;
+      --accent: #ffb84d;
+      --accent-100: #3a2a10;
+      --accent-200: #4d3714;
+      --accent-700: #ffcf85;
+      --accent-800: #ffe2b3;
+      --good-100: #29331d;
+      --good-800: #b7d68e;
+      --neutral-100: #2c2519;
+      --neutral-200: #362e21;
+      --neutral-300: #453b2b;
+      --neutral-600: #b3a891;
+      --neutral-700: #cfc3ab;
+      --divider: rgba(242, 235, 224, 0.14);
+      --page-bg: #14110d;
+      --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      --placeholder: rgba(242, 235, 224, 0.4);
+    }
+  }
+  /* explicit overrides from the manual theme toggle — win over the system-preference media query above regardless of device setting */
+  :root[data-theme="light"] {
+    --bg: #f5ead8; --surface: #ebddc5; --text: #201e1d;
+    --accent: #ffa31a; --accent-100: #fff3e0; --accent-200: #ffe0ad; --accent-700: #a35d00; --accent-800: #703f00;
+    --good-100: #f0fae1; --good-800: #3d472b;
+    --neutral-100: #f9f4ed; --neutral-200: #eee7db; --neutral-300: #dcd3c4; --neutral-600: #82796a; --neutral-700: #645c50;
+    --divider: rgba(32, 30, 29, 0.16); --page-bg: #dcd3c4; --shadow: 0 12px 32px rgba(46, 43, 37, 0.22); --placeholder: rgba(32, 30, 29, 0.45);
+  }
+  :root[data-theme="dark"] {
+    --bg: #211c16; --surface: #2c2519; --text: #f2ebe0;
+    --accent: #ffb84d; --accent-100: #3a2a10; --accent-200: #4d3714; --accent-700: #ffcf85; --accent-800: #ffe2b3;
+    --good-100: #29331d; --good-800: #b7d68e;
+    --neutral-100: #2c2519; --neutral-200: #362e21; --neutral-300: #453b2b; --neutral-600: #b3a891; --neutral-700: #cfc3ab;
+    --divider: rgba(242, 235, 224, 0.14); --page-bg: #14110d; --shadow: 0 12px 32px rgba(0, 0, 0, 0.45); --placeholder: rgba(242, 235, 224, 0.4);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  input, select, textarea, code {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+  }
+  body {
+    margin: 0;
+    background: var(--page-bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+  input::placeholder, textarea::placeholder { color: var(--placeholder); }
+  select { appearance: none; }
+  button { font-family: var(--font-body); touch-action: manipulation; }
+
+  #shell {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--bg);
+  }
+
+  .h-heading { font-family: var(--font-heading); }
+  .muted { opacity: 0.75; }
+  .hidden { display: none !important; }
+
+  /* gate */
+  .gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px 32px;
+    gap: 22px;
+    text-align: center;
+    flex: 1;
+    position: relative;
+    z-index: 0;
+  }
+  .gate::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url('/images/gate-background.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.14;
+  }
+  @media (prefers-color-scheme: dark) { .gate::before { opacity: 0.22; } }
+  :root[data-theme="dark"] .gate::before { opacity: 0.22; }
+  :root[data-theme="light"] .gate::before { opacity: 0.14; }
+  .gate-photo {
+    width: 120px; height: 120px; border-radius: 50%;
+    box-shadow: 0 3px 10px rgba(46, 43, 37, 0.16);
+    overflow: hidden;
+    flex: none;
+  }
+  .gate-photo img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .eyebrow { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-700); margin-bottom: 8px; }
+  .gate h1 { font-family: var(--font-heading); font-size: 26px; margin: 0 0 8px; line-height: 1.2; word-break: break-word; }
+  .gate p.lede { margin: 0; font-size: 14px; opacity: 0.75; max-width: 300px; }
+  .gate-form { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 14px; text-align: left; }
+
+  label { display: block; font-size: 12px; margin-bottom: 5px; opacity: 0.7; }
+  .input, select.input {
+    width: 100%; min-height: 46px; padding: 6px 16px; font: inherit; font-size: 15px;
+    color: var(--text); background: var(--surface); border: 1px solid var(--divider); border-radius: 999px;
+  }
+  .error-text { font-size: 13px; color: var(--accent-700); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box;
+    border: none; border-radius: 999px; background: var(--accent); color: var(--bg);
+    font-family: var(--font-heading); font-size: 15px; cursor: pointer; min-height: 46px; padding: 10px 18px;
+  }
+  .btn.secondary { background: transparent; border: 1px solid var(--divider); color: var(--text); font-family: var(--font-body); font-size: 13px; min-height: 40px; }
+  .btn.small { font-family: var(--font-body); font-size: 12px; min-height: 0; padding: 8px 14px; }
+  .btn.block { width: 100%; }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .link-btn { background: transparent; border: none; color: var(--accent); font-family: var(--font-body); font-size: 13px; cursor: pointer; padding: 0; }
+
+  /* shell header + nav */
+  .topbar {
+    display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+    position: sticky; top: 0; background: var(--bg); z-index: 5; border-bottom: 1px solid var(--divider);
+  }
+  .topbar .title { font-family: var(--font-heading); font-size: 18px; }
+  .topbar .right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .pill { font-size: 11px; padding: 5px 12px; border-radius: 999px; }
+  .pill.good { background: var(--good-100); color: var(--good-800); }
+  .pill.neutral { background: var(--neutral-200); color: var(--neutral-700); }
+
+  .hamburger-btn {
+    border: none; background: transparent; color: var(--text); cursor: pointer;
+    padding: 4px; display: flex; flex-direction: column; gap: 3px; justify-content: center; align-items: center;
+    width: 28px; height: 28px; flex: none;
+  }
+  .hamburger-btn span { display: block; width: 18px; height: 2px; border-radius: 2px; background: var(--text); transition: transform 0.15s ease, opacity 0.15s ease; }
+  .theme-btn { border: none; background: transparent; color: var(--text); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; flex: none; }
+  .theme-btn svg { width: 18px; height: 18px; display: block; }
+  .gate-theme-btn { position: fixed; top: 14px; right: 14px; z-index: 10; }
+  .menu-panel {
+    position: absolute; top: 100%; right: 20px; margin-top: 6px; z-index: 20;
+    background: var(--surface); border-radius: 18px; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; padding: 8px; min-width: 180px;
+  }
+  .menu-panel button {
+    border: none; background: transparent; color: var(--text); text-align: left; font-size: 14px;
+    padding: 11px 14px; border-radius: 12px; cursor: pointer; font-family: var(--font-body);
+  }
+  .menu-panel button.active { background: var(--accent-100); color: var(--accent-700); font-weight: 600; }
+
+  .content { flex: 1; overflow-y: auto; padding: 20px 20px 24px; }
+
+  .card { background: var(--surface); border-radius: 22px; padding: 18px; margin-bottom: 14px; }
+  .card.tint { background: var(--accent-100); }
+  .card-eyebrow { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .card.tint .card-eyebrow { color: var(--accent-700); }
+
+  .rsvp-row { display: flex; gap: 8px; }
+  .rsvp-row button { flex: 1; padding: 12px 8px; border-radius: 999px; border: 1px solid var(--divider); background: transparent; color: var(--text); font-family: var(--font-body); font-size: 14px; cursor: pointer; }
+  .rsvp-row button.active { border-color: transparent; background: var(--accent); color: var(--bg); font-weight: 600; }
+  .rsvp-row button.active.no { background: var(--neutral-600); }
+
+  .upi-row { display: flex; align-items: center; gap: 8px; background: var(--bg); border-radius: 999px; padding: 8px 8px 8px 16px; margin-top: 4px; }
+  .upi-row code { font-size: 13px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .upi-row button { border: none; border-radius: 999px; background: var(--accent); color: var(--bg); font-size: 12px; padding: 9px 14px; cursor: pointer; white-space: nowrap; }
+
+  .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .section-head .h-heading { font-size: 16px; }
+  .chip-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-size: 12px; padding: 6px 12px; border-radius: 999px; background: var(--neutral-100); color: var(--neutral-700); }
+
+  .filter-row { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; }
+  .filter-chip { flex: none; border: 1px solid var(--divider); background: transparent; color: var(--text); font-size: 13px; padding: 7px 14px; border-radius: 999px; cursor: pointer; opacity: 0.7; }
+  .filter-chip.active { border-color: transparent; background: var(--accent); color: var(--bg); opacity: 1; font-weight: 600; }
+
+  .budget-row { display: flex; justify-content: space-between; font-size: 13px; }
+  .budget-row.total { font-size: 14px; font-weight: 600; }
+  .budget-divider { height: 1px; background: rgba(198, 113, 57, 0.3); margin: 3px 0; }
+
+  .stat-grid { display: flex; gap: 10px; margin-bottom: 16px; }
+  .stat-tile { flex: 1; background: var(--surface); border-radius: 16px; padding: 12px; text-align: center; }
+  .stat-tile .num { font-family: var(--font-heading); font-size: 19px; }
+  .stat-tile .label { font-size: 10px; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .list-row { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--surface); border-radius: 16px; margin-bottom: 8px; }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--neutral-200); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-size: 13px; color: var(--neutral-700); flex: none; }
+  .list-row .main { flex: 1; min-width: 0; }
+  .list-row .name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .list-row .sub { font-size: 11px; opacity: 0.6; }
+  .badge { font-size: 11px; padding: 6px 12px; border-radius: 999px; white-space: nowrap; border: none; cursor: default; }
+  .badge.good { background: var(--good-100); color: var(--good-800); }
+  .badge.neutral { background: var(--neutral-200); color: var(--neutral-700); }
+  .badge.action { cursor: pointer; }
+
+  .cat-row { margin-bottom: 10px; }
+  .cat-row .top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+  .cat-bar { height: 6px; border-radius: 999px; background: var(--neutral-200); overflow: hidden; }
+  .cat-bar > div { height: 100%; border-radius: 999px; background: var(--accent); }
+
+  .exp-amount { font-size: 14px; font-family: var(--font-heading); white-space: nowrap; }
+  .exp-actions { display: flex; gap: 10px; }
+  .exp-actions button { border: none; background: transparent; color: var(--accent); font-size: 12px; cursor: pointer; padding: 4px 2px; text-decoration: underline; white-space: nowrap; }
+
+  .bottom-nav { position: sticky; bottom: 0; display: flex; background: var(--bg); border-top: 1px solid var(--divider); padding: 10px 8px 14px; padding-bottom: max(14px, env(safe-area-inset-bottom)); z-index: 5; }
+  .bottom-nav button { flex: 1; border: none; background: transparent; color: var(--text); opacity: 0.55; font-family: var(--font-body); font-size: 13px; padding: 6px; cursor: pointer; }
+  .bottom-nav button.active { color: var(--accent-700); font-weight: 700; opacity: 1; }
+
+  .overlay { position: fixed; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(46, 43, 37, 0.5); z-index: 30; }
+  .modal { width: min(400px, 100%); max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding: 22px; border-radius: 26px; background: var(--surface); box-shadow: var(--shadow); }
+  .modal-title { font-family: var(--font-heading); font-size: 19px; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 2px; }
+
+  .field-group { display: flex; flex-direction: column; gap: 12px; }
+  .empty-note { text-align: center; padding: 14px; font-size: 13px; opacity: 0.65; }
+
+  /* todo board */
+  .todo-col { margin-bottom: 20px; }
+  .todo-col-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .todo-col-head .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .todo-col-head .dot.planned { background: var(--accent); }
+  .todo-col-head .dot.in_progress { background: #c9a227; }
+  .todo-col-head .dot.dropped { background: var(--neutral-600); }
+  .todo-col-head .h-heading { font-size: 15px; }
+  .todo-item { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--surface); border-radius: 16px; margin-bottom: 8px; }
+  .todo-item .title { flex: 1; font-size: 14px; }
+  .todo-item select.status-select { width: auto; min-height: 34px; padding: 4px 10px; font-size: 12px; border-radius: 999px; }
+  .todo-item button.remove { border: none; background: transparent; color: var(--accent-700); font-size: 12px; cursor: pointer; padding: 4px 2px; text-decoration: underline; white-space: nowrap; }
+
+  /* misc board */
+  .board-post { padding: 12px 14px; background: var(--surface); border-radius: 16px; margin-bottom: 8px; }
+  .board-post .msg-text { font-size: 14px; white-space: pre-wrap; word-break: break-word; }
+  .board-post .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+  .board-post .author { font-size: 11px; opacity: 0.6; }
+  .board-post button.remove { border: none; background: transparent; color: var(--accent-700); font-size: 11px; cursor: pointer; padding: 2px; text-decoration: underline; }
+  .vote-row { display: flex; align-items: center; gap: 4px; }
+  .vote-btn { border: none; background: transparent; color: var(--neutral-600); font-size: 15px; cursor: pointer; padding: 2px 6px; line-height: 1; }
+  .vote-btn.active-up { color: var(--good-800); }
+  .vote-btn.active-down { color: var(--accent-700); }
+  .vote-score { font-size: 12px; min-width: 1.5em; text-align: center; opacity: 0.75; }
+  textarea.input { min-height: 72px; padding: 10px 16px; border-radius: 18px; resize: vertical; font: inherit; }
+  .misc-section { margin-bottom: 24px; }
+  .misc-section-head { font-family: var(--font-heading); font-size: 16px; margin-bottom: 10px; }
+  .misc-section-sub { font-size: 12px; opacity: 0.65; margin: -6px 0 10px; }
+  .nav-card { display: block; width: 100%; text-align: left; border: none; cursor: pointer; font: inherit; color: inherit; }
+</style>
+<script>
+  try {
+    var storedTheme = localStorage.getItem("reunion_theme");
+    if (storedTheme) document.documentElement.setAttribute("data-theme", storedTheme);
+  } catch (e) {}
+</script>
+</head>
+<body>
+<div id="shell"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var IDENTITY_KEY = "reunion_identity";
+  var PIN_KEY = "reunion_admin_pin";
+  var DEVICE_SECRET_KEY = "reunion_payment_device_secret";
+  var MY_VOTES_KEY = "reunion_my_votes";
+
+  // Purely cosmetic — which arrow shows as "active" on this device. The
+  // server is the source of truth for one-vote-per-member; this just avoids
+  // re-fetching that to decide which button to highlight.
+  function readMyVotes() {
+    try {
+      return JSON.parse(localStorage.getItem(MY_VOTES_KEY) || "{}");
+    } catch (e) {
+      return {};
+    }
+  }
+  function writeMyVote(postId, vote) {
+    var votes = readMyVotes();
+    if (vote === 0) delete votes[postId];
+    else votes[postId] = vote;
+    localStorage.setItem(MY_VOTES_KEY, JSON.stringify(votes));
+  }
+  var THEME_KEY = "reunion_theme";
+
+  var SUN_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>';
+  var MOON_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>';
+
+  function effectiveTheme() {
+    var stored = localStorage.getItem(THEME_KEY);
+    if (stored === "light" || stored === "dark") return stored;
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  function themeToggleHTML(extraClass) {
+    var current = effectiveTheme();
+    var icon = current === "dark" ? SUN_ICON : MOON_ICON;
+    var label = current === "dark" ? "Switch to light mode" : "Switch to dark mode";
+    return '<button class="theme-btn' + (extraClass ? " " + extraClass : "") + '" id="theme-toggle" aria-label="' + label + '">' + icon + '</button>';
+  }
+  function bindThemeToggle() {
+    var btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var next = effectiveTheme() === "dark" ? "light" : "dark";
+      localStorage.setItem(THEME_KEY, next);
+      document.documentElement.setAttribute("data-theme", next);
+      render();
+    });
+  }
+
+  var state = {
+    loaded: false,
+    loadError: "",
+    event: null,
+    members: [],
+    expenses: [],
+    todos: [],
+    posts: [],
+    identity: readIdentity(),
+    adminPin: sessionStorage.getItem(PIN_KEY) || "",
+    paymentLog: null,
+    paymentLogError: "",
+    screen: "home",
+    gateSelectedId: "",
+    gateError: "",
+    gateMode: "signin",
+    joinError: "",
+    gatePhoneInput: "",
+    joinName: "",
+    joinPhone: "",
+    pinDialogOpen: false,
+    pinError: "",
+    attendeeSearch: "",
+    attendeeFilter: "all",
+    addExpenseOpen: false,
+    editingExpenseId: null,
+    expError: "",
+    memberMsg: "",
+    eventMsg: "",
+    menuOpen: false,
+    miscView: "hub",
+    pocs: [],
+    newPoc: { category: "", name: "" },
+    pocError: "",
+    showWelcome: false,
+    newTodoTitle: "",
+    todoError: "",
+    boardForms: {
+      proposal: { text: "", error: "" },
+      kindwords: { text: "", error: "" },
+      feedback: { text: "", error: "" },
+    },
+  };
+
+  function readIdentity() {
+    try {
+      var raw = localStorage.getItem(IDENTITY_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+  function writeIdentity(id) {
+    state.identity = id;
+    if (id) localStorage.setItem(IDENTITY_KEY, JSON.stringify(id));
+    else localStorage.removeItem(IDENTITY_KEY);
+  }
+
+  function money(n) { return "₹" + Math.round(Number(n) || 0).toLocaleString("en-IN"); }
+  // payment_phone is plain text, one contact per line as "Name: upi id or phone".
+  // A line with no colon is shown with no name label.
+  function paymentContacts() {
+    var raw = (state.event && state.event.payment_phone) || "";
+    return raw.split("\n").map(function (line) {
+      line = line.trim();
+      if (!line) return null;
+      var idx = line.indexOf(":");
+      if (idx === -1) return { name: "", value: line };
+      return { name: line.slice(0, idx).trim(), value: line.slice(idx + 1).trim() };
+    }).filter(Boolean);
+  }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function formatEventDate(s) {
+    if (!s) return "";
+    var d = new Date(s + "T00:00:00");
+    if (isNaN(d.getTime())) return s;
+    return d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", year: "numeric" });
+  }
+  function countdownLabel() {
+    var s = state.event.event_date;
+    if (!s) return "";
+    var target = new Date(s + "T00:00:00");
+    if (isNaN(target.getTime())) return "";
+    var now = new Date();
+    var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var days = Math.round((target - startOfToday) / 86400000);
+    if (days > 1) return days + " days to go";
+    if (days === 1) return "Tomorrow!";
+    if (days === 0) return "Today!";
+    var ago = Math.abs(days);
+    return ago + (ago === 1 ? " day ago" : " days ago");
+  }
+
+  async function api(path, options) {
+    options = options || {};
+    var headers = Object.assign({ "content-type": "application/json" }, options.headers || {});
+    var res = await fetch(path, {
+      method: options.method || "GET",
+      headers: headers,
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+    var data = await res.json().catch(function () { return {}; });
+    if (!res.ok) throw new Error(data.error || ("Request failed (" + res.status + ")"));
+    return data;
+  }
+  async function adminApi(path, body, method) {
+    return api(path, { method: method || "POST", headers: { "X-Admin-Pin": state.adminPin }, body: body });
+  }
+  function currentUser() {
+    if (!state.identity) return null;
+    return state.members.find(function (m) { return String(m.id) === String(state.identity.memberId); }) || null;
+  }
+  function contributionAmount() { return (state.event && state.event.contribution_amount) || 0; }
+  function totals() {
+    var attendingCount = state.members.filter(function (m) { return m.rsvp_status === "yes"; }).length;
+    var paidCount = state.members.filter(function (m) { return !!m.paid; }).length;
+    var totalCollected = state.members.reduce(function (sum, m) { return sum + (m.paid ? Number(m.amount_paid || 0) : 0); }, 0);
+    var totalExpenses = state.expenses.reduce(function (sum, e) { return sum + Number(e.amount || 0); }, 0);
+    return { attendingCount: attendingCount, paidCount: paidCount, totalCollected: totalCollected, totalExpenses: totalExpenses, balance: totalCollected - totalExpenses };
+  }
+
+  async function loadEvent() {
+    try {
+      var data = await api("/api/event");
+      state.event = data.event;
+      state.members = data.members || [];
+      state.expenses = data.expenses || [];
+      state.todos = data.todos || [];
+      state.posts = data.posts || [];
+      state.pocs = data.pocs || [];
+      state.loaded = true;
+      state.loadError = "";
+      if (state.identity && !currentUser()) writeIdentity(null);
+    } catch (err) {
+      state.loadError = err.message;
+    }
+    render();
+  }
+
+  // ---------------------------------------------------------------- render
+
+  function render() {
+    var shell = document.getElementById("shell");
+    if (!state.loaded) {
+      shell.innerHTML = '<div class="gate"><div class="h-heading" style="font-size:18px;">' +
+        (state.loadError ? esc(state.loadError) : "Loading…") + "</div></div>";
+      return;
+    }
+    if (!state.event) {
+      shell.innerHTML = '<div class="gate"><h1>No event yet</h1><p class="lede">Ask an organizer to set up the reunion.</p></div>';
+      return;
+    }
+    if (!state.identity) {
+      shell.innerHTML = gateHTML();
+      bindGate();
+      return;
+    }
+    shell.innerHTML = shellHTML();
+    bindShell();
+  }
+
+  // ---------------------------------------------------------------- gate
+
+  function gateHTML() {
+    var options = state.members
+      .slice()
+      .sort(function (a, b) { return a.name.localeCompare(b.name); })
+      .map(function (m) { return '<option value="' + m.id + '"' + (String(m.id) === String(state.gateSelectedId) ? " selected" : "") + ">" + esc(m.name) + "</option>"; })
+      .join("");
+    var themeBtn = themeToggleHTML("gate-theme-btn");
+    var intro = (
+      themeBtn +
+      '<div class="gate-photo"><img src="/images/group-photo.jpg" alt="" /></div>' +
+      '<div>' +
+        '<div class="eyebrow">Welcome back</div>' +
+        '<h1>' + esc(state.event.name || "Reunion") + '</h1>' +
+        '<p class="lede">' + esc(state.event.venue || "") + (state.event.venue ? ' — ' : '') + 'Find your name below to RSVP, check your payment status, and see who’s coming home.</p>' +
+      '</div>'
+    );
+
+    if (state.gateMode === "join") {
+      return (
+        '<div class="gate">' +
+          intro +
+          '<div class="gate-form">' +
+            '<div>' +
+              '<label for="join-name">Your name</label>' +
+              '<input id="join-name" class="input" placeholder="Full name" value="' + esc(state.joinName) + '" />' +
+            '</div>' +
+            '<div>' +
+              '<label for="join-phone">Your phone number</label>' +
+              '<input id="join-phone" class="input" placeholder="10-digit number" inputmode="numeric" value="' + esc(state.joinPhone) + '" />' +
+            '</div>' +
+            (state.joinError ? '<div class="error-text">' + esc(state.joinError) + '</div>' : "") +
+            '<button id="join-submit" class="btn block">Join &amp; continue</button>' +
+            '<button id="join-cancel" class="link-btn" style="align-self:center;">← Back to sign in</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    return (
+      '<div class="gate">' +
+        intro +
+        '<div class="gate-form">' +
+          '<div>' +
+            '<label for="gate-member">Your name</label>' +
+            '<select id="gate-member" class="input">' +
+              '<option value="">Choose your name…</option>' + options +
+            '</select>' +
+          '</div>' +
+          '<div>' +
+            '<label for="gate-phone">Last 4 digits of your phone</label>' +
+            '<input id="gate-phone" class="input" placeholder="e.g. 4821" maxlength="4" inputmode="numeric" value="' + esc(state.gatePhoneInput) + '" />' +
+          '</div>' +
+          (state.gateError ? '<div class="error-text">' + esc(state.gateError) + '</div>' : "") +
+          '<button id="gate-continue" class="btn block">Continue</button>' +
+          '<button id="join-open" class="link-btn" style="align-self:center;">Don\'t see your name? Add yourself</button>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function bindGate() {
+    bindThemeToggle();
+    if (state.gateMode === "join") {
+      document.getElementById("join-cancel").addEventListener("click", function () {
+        state.gateMode = "signin";
+        state.joinError = "";
+        render();
+      });
+      document.getElementById("join-submit").addEventListener("click", async function () {
+        var nameRaw = document.getElementById("join-name").value;
+        var phoneRaw = document.getElementById("join-phone").value;
+        state.joinName = nameRaw;
+        state.joinPhone = phoneRaw;
+        var name = nameRaw.trim();
+        var phone = phoneRaw.trim().replace(/\D/g, "");
+        if (!name) { state.joinError = "Enter your name."; return render(); }
+        if (phone.length < 4) { state.joinError = "Enter a valid phone number."; return render(); }
+        var btn = document.getElementById("join-submit");
+        btn.disabled = true;
+        try {
+          var result = await api("/api/register", { method: "POST", body: { name: name, phone: phone } });
+          writeIdentity({ memberId: result.id, phoneLast4: result.phone_last4 });
+          state.gateMode = "signin";
+          state.joinError = "";
+          state.joinName = "";
+          state.joinPhone = "";
+          state.showWelcome = true;
+          await loadEvent();
+        } catch (err) {
+          state.joinError = err.message;
+          render();
+        } finally {
+          btn.disabled = false;
+        }
+      });
+      return;
+    }
+
+    var memberSel = document.getElementById("gate-member");
+    var phoneInput = document.getElementById("gate-phone");
+    document.getElementById("join-open").addEventListener("click", function () {
+      state.gateMode = "join";
+      state.joinError = "";
+      render();
+    });
+    document.getElementById("gate-continue").addEventListener("click", async function () {
+      var memberId = memberSel.value;
+      var phone = phoneInput.value.trim();
+      state.gateSelectedId = memberId;
+      state.gatePhoneInput = phoneInput.value;
+      if (!memberId) { state.gateError = "Pick your name from the list."; return render(); }
+      if (!/^\d{4}$/.test(phone)) { state.gateError = "Enter the last 4 digits of your phone number."; return render(); }
+      var btn = document.getElementById("gate-continue");
+      btn.disabled = true;
+      try {
+        await api("/api/identify", { method: "POST", body: { member_id: Number(memberId), phone_last4: phone } });
+        writeIdentity({ memberId: Number(memberId), phoneLast4: phone });
+        state.gateError = "";
+        state.gatePhoneInput = "";
+        state.screen = "home";
+        state.showWelcome = true;
+        render();
+      } catch (err) {
+        state.gateError = err.message;
+        render();
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
+  // ---------------------------------------------------------------- shell
+
+  function shellHTML() {
+    var adminUnlocked = !!state.adminPin;
+    return (
+      '<div class="topbar" style="position:relative;">' +
+        '<div class="title">' + esc(state.event.name || "Reunion") + '</div>' +
+        '<div class="right">' +
+          (adminUnlocked
+            ? '<span class="pill good">Organizer</span>'
+            : '<button class="link-btn" id="open-pin">Organizer sign-in</button>') +
+          '<button class="link-btn" id="switch-user" title="Not you?">Switch</button>' +
+          themeToggleHTML() +
+          '<button class="hamburger-btn" id="menu-toggle" aria-label="Menu"><span></span><span></span><span></span></button>' +
+        '</div>' +
+        (state.menuOpen ? menuPanelHTML(adminUnlocked) : "") +
+      '</div>' +
+      (state.menuOpen ? '<div id="menu-backdrop" style="position:fixed;inset:0;z-index:4;"></div>' : "") +
+      '<div class="content">' + screenHTML(adminUnlocked) + '</div>' +
+      bottomNavHTML() +
+      (state.pinDialogOpen ? pinDialogHTML() : "") +
+      (state.addExpenseOpen ? expenseDialogHTML() : "") +
+      (state.showWelcome ? welcomeDialogHTML() : "")
+    );
+  }
+
+  function menuPanelHTML(adminUnlocked) {
+    var items = [["todo", "Todo list"], ["misc", "Misc & feedback"], ["about", "About"]];
+    items.push(adminUnlocked ? ["organizer", "Organizer"] : null);
+    return (
+      '<div class="menu-panel">' +
+        items.filter(Boolean).map(function (it) {
+          return '<button data-nav="' + it[0] + '" class="' + (state.screen === it[0] ? "active" : "") + '">' + it[1] + '</button>';
+        }).join("") +
+      '</div>'
+    );
+  }
+
+  function screenHTML(adminUnlocked) {
+    if (state.screen === "attendees") return attendeesHTML();
+    if (state.screen === "expenses") return expensesHTML(adminUnlocked);
+    if (state.screen === "todo") return todoHTML(adminUnlocked);
+    if (state.screen === "misc") return miscHTML();
+    if (state.screen === "about") return aboutHTML();
+    if (state.screen === "organizer" && adminUnlocked) return organizerHTML();
+    return homeHTML();
+  }
+
+  function bottomNavHTML() {
+    var tabs = [
+      ["home", "Home"],
+      ["attendees", "Attendees"],
+      ["expenses", "Expenses"],
+    ];
+    return (
+      '<div class="bottom-nav">' +
+        tabs.map(function (t) {
+          return '<button data-nav="' + t[0] + '" class="' + (state.screen === t[0] ? "active" : "") + '">' + t[1] + "</button>";
+        }).join("") +
+      "</div>"
+    );
+  }
+
+  function budgetCardHTML(tint) {
+    var t = totals();
+    return (
+      '<div class="card' + (tint ? " tint" : "") + '">' +
+        '<div class="card-eyebrow">Reunion budget</div>' +
+        '<div class="budget-row"><span>Collected</span><span class="h-heading">' + money(t.totalCollected) + '</span></div>' +
+        '<div class="budget-row"><span>Spent</span><span class="h-heading">' + money(t.totalExpenses) + '</span></div>' +
+        '<div class="budget-divider"></div>' +
+        '<div class="budget-row total"><span>Balance</span><span>' + money(t.balance) + '</span></div>' +
+      '</div>'
+    );
+  }
+
+  // ---------------------------------------------------------------- home
+
+  function homeHTML() {
+    var user = currentUser();
+    var t = totals();
+    var attendingPreview = state.members.filter(function (m) { return m.rsvp_status === "yes"; }).slice(0, 8);
+    var rsvp = user ? user.rsvp_status : "pending";
+    var paid = user ? !!user.paid : false;
+
+    return (
+      '<div>' +
+        '<div class="card">' +
+          '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">' +
+            '<div class="card-eyebrow">The reunion</div>' +
+            (countdownLabel() ? '<span class="pill good" style="white-space:nowrap;">' + esc(countdownLabel()) + '</span>' : "") +
+          '</div>' +
+          '<div class="h-heading" style="font-size:20px;">' + esc(formatEventDate(state.event.event_date) || "Date TBA") + '</div>' +
+          '<div style="font-size:13px;opacity:0.8;">' + esc(state.event.venue || "Venue TBA") + '</div>' +
+          (state.event.maps_url ? '<a href="' + esc(state.event.maps_url) + '" target="_blank" rel="noopener noreferrer" class="link-btn" style="display:inline-block;margin-top:8px;text-decoration:underline;">Get directions →</a>' : "") +
+        '</div>' +
+
+        (user ? (
+          '<div class="card">' +
+            '<div class="card-eyebrow">Your RSVP, ' + esc(user.name.split(" ")[0]) + '</div>' +
+            '<div class="rsvp-row">' +
+              '<button data-rsvp="yes" class="' + (rsvp === "yes" ? "active" : "") + '">I’ll be there</button>' +
+              '<button data-rsvp="no" class="' + (rsvp === "no" ? "active no" : "") + '">Can’t make it</button>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="card">' +
+            '<div class="card-eyebrow">Your contribution</div>' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;">' +
+              '<div class="h-heading" style="font-size:22px;">' + money(contributionAmount()) + '</div>' +
+              '<span class="badge ' + (paid ? "good" : "neutral") + '">' + (paid ? "Paid" : "Unpaid") + '</span>' +
+            '</div>' +
+            (!paid && paymentContacts().length ? (
+              '<div style="font-size:13px;opacity:0.8;margin-top:8px;">Pay via UPI using a number below, then let an organizer know so they can mark you paid.</div>' +
+              paymentContacts().map(function (c) {
+                return (
+                  '<div class="upi-row">' +
+                    (c.name ? '<span style="font-size:12px;opacity:0.7;white-space:nowrap;">' + esc(c.name) + '</span>' : "") +
+                    '<code>' + esc(c.value) + '</code>' +
+                    '<button data-copy-value="' + esc(c.value) + '">Copy</button>' +
+                  '</div>'
+                );
+              }).join("")
+            ) : "") +
+          '</div>'
+        ) : "") +
+
+        '<div style="margin-bottom:16px;">' +
+          '<div class="section-head"><div class="h-heading">' + t.attendingCount + ' classmates coming</div>' +
+          '<button class="link-btn" data-nav="attendees">See all →</button></div>' +
+          '<div class="chip-wrap">' +
+            attendingPreview.map(function (m) { return '<span class="chip">' + esc(m.name) + '</span>'; }).join("") +
+          '</div>' +
+        '</div>' +
+
+        '<div class="card tint">' +
+          '<div class="card-eyebrow">Reunion budget</div>' +
+          '<div class="budget-row"><span>Collected</span><span class="h-heading">' + money(t.totalCollected) + '</span></div>' +
+          '<div class="budget-row"><span>Spent</span><span class="h-heading">' + money(t.totalExpenses) + '</span></div>' +
+          '<div class="budget-divider"></div>' +
+          '<div class="budget-row total"><span>Balance</span><span>' + money(t.balance) + '</span></div>' +
+          '<button class="link-btn" data-nav="expenses" style="text-decoration:underline;align-self:flex-start;">See full expense tracker →</button>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  // ---------------------------------------------------------------- attendees
+
+  function attendeesHTML() {
+    var t = totals();
+    return (
+      '<div>' +
+        '<div class="stat-grid">' +
+          '<div class="stat-tile"><div class="num">' + t.attendingCount + '</div><div class="label">Coming</div></div>' +
+          '<div class="stat-tile"><div class="num">' + t.paidCount + '</div><div class="label">Paid</div></div>' +
+          '<div class="stat-tile"><div class="num">' + state.members.length + '</div><div class="label">Total</div></div>' +
+        '</div>' +
+        '<div class="filter-row">' +
+          [["all", "All"], ["yes", "Coming"], ["no", "Not coming"], ["pending", "Pending"]].map(function (f) {
+            return '<button class="filter-chip' + (state.attendeeFilter === f[0] ? " active" : "") + '" data-attendee-filter="' + f[0] + '">' + f[1] + '</button>';
+          }).join("") +
+        '</div>' +
+        '<input id="attendee-search" class="input" placeholder="Search classmates" value="' + esc(state.attendeeSearch) + '" style="margin-bottom:14px;" />' +
+        '<div id="attendee-list">' + attendeeListHTML() + '</div>' +
+      '</div>'
+    );
+  }
+
+  function attendeeListHTML() {
+    var adminUnlocked = !!state.adminPin;
+    var canManagePayments = adminUnlocked && !!(currentUser() && currentUser().can_manage_payments);
+    var search = state.attendeeSearch.trim().toLowerCase();
+    var filter = state.attendeeFilter;
+    var rsvpLabel = { yes: "Coming", no: "Not coming", pending: "No response yet" };
+    var list = state.members
+      .filter(function (m) { return !search || m.name.toLowerCase().indexOf(search) !== -1; })
+      .filter(function (m) { return filter === "all" || (m.rsvp_status || "pending") === filter; })
+      .sort(function (a, b) { return a.name.localeCompare(b.name); });
+    if (!list.length) return '<div class="empty-note">No matches.</div>';
+    return list.map(function (m) {
+      // Payment status is private between the person and organizers — no
+      // one wants classmates seeing "who hasn't paid yet."
+      var badge;
+      if (canManagePayments) {
+        badge = '<button class="badge action ' + (m.paid ? "good" : "neutral") + '" data-toggle-paid="' + m.id + '">' + (m.paid ? "Paid" : "Mark paid") + '</button>';
+      } else if (adminUnlocked) {
+        badge = '<span class="badge ' + (m.paid ? "good" : "neutral") + '">' + (m.paid ? "Paid" : "Unpaid") + '</span>';
+      } else {
+        badge = "";
+      }
+      return (
+        '<div class="list-row">' +
+          '<div class="avatar">' + esc(m.name.charAt(0)) + '</div>' +
+          '<div class="main"><div class="name">' + esc(m.name) + '</div><div class="sub">' + rsvpLabel[m.rsvp_status || "pending"] + '</div></div>' +
+          badge +
+        '</div>'
+      );
+    }).join("");
+  }
+
+  // ---------------------------------------------------------------- expenses
+
+  function categoryBreakdown() {
+    var totals = {};
+    state.expenses.forEach(function (e) { totals[e.category || "Other"] = (totals[e.category || "Other"] || 0) + Number(e.amount || 0); });
+    var max = Math.max(1, Object.values(totals).reduce(function (a, b) { return Math.max(a, b); }, 0));
+    return Object.keys(totals)
+      .map(function (cat) { return { category: cat, total: totals[cat] }; })
+      .sort(function (a, b) { return b.total - a.total; })
+      .map(function (c) { return { category: c.category, totalFmt: money(c.total), pct: Math.round((c.total / max) * 100) }; });
+  }
+
+  function expensesHTML(adminUnlocked) {
+    var breakdown = categoryBreakdown();
+    var expenses = state.expenses.slice();
+    return (
+      '<div>' +
+        budgetCardHTML(true) +
+        '<div class="h-heading" style="font-size:16px;margin-bottom:10px;">By category</div>' +
+        '<div style="margin-bottom:20px;">' +
+          (breakdown.length ? breakdown.map(function (c) {
+            return '<div class="cat-row"><div class="top"><span>' + esc(c.category) + '</span><span style="opacity:0.7;">' + c.totalFmt + '</span></div>' +
+              '<div class="cat-bar"><div style="width:' + c.pct + '%;"></div></div></div>';
+          }).join("") : '<div class="empty-note">No expenses logged yet.</div>') +
+        '</div>' +
+        '<div class="section-head"><div class="h-heading">All expenses</div>' +
+          (adminUnlocked ? '<button class="btn small" id="open-add-expense">+ Add expense</button>' : "") +
+        '</div>' +
+        '<div style="margin-bottom:16px;">' +
+          (expenses.length ? expenses.map(function (e) {
+            return (
+              '<div class="list-row">' +
+                '<div class="main"><div class="name">' + esc(e.description || "—") + '</div>' +
+                '<div class="sub">' + esc(e.category || "Uncategorized") + ' · ' + esc(e.created_at ? String(e.created_at).slice(0, 10) : "") + '</div></div>' +
+                '<div class="exp-amount">' + money(e.amount) + '</div>' +
+                (adminUnlocked ? '<div class="exp-actions"><button data-edit-expense="' + e.id + '">Edit</button><button data-delete-expense="' + e.id + '">Delete</button></div>' : "") +
+              '</div>'
+            );
+          }).join("") : '<div class="empty-note">No expenses logged yet.</div>') +
+        '</div>' +
+        (!adminUnlocked ? '<div class="empty-note">Only organizers can log expenses. <button class="link-btn" id="open-pin-2" style="text-decoration:underline;">Unlock organizer access</button></div>' : "") +
+      '</div>'
+    );
+  }
+
+  function expenseDialogHTML() {
+    var editing = state.expenses.find(function (e) { return e.id === state.editingExpenseId; });
+    var form = state._expForm || { category: "Venue", description: "", amount: "" };
+    var cats = ["Venue", "Catering", "Decor", "Entertainment", "Photography", "Miscellaneous"];
+    return (
+      '<div class="overlay" id="expense-overlay">' +
+        '<div class="modal">' +
+          '<div class="modal-title">' + (editing ? "Edit expense" : "Log an expense") + '</div>' +
+          '<div class="field-group">' +
+            '<div><label for="exp-category">Category</label><select id="exp-category" class="input">' +
+              cats.map(function (c) { return '<option' + (form.category === c ? " selected" : "") + '>' + c + '</option>'; }).join("") +
+            '</select></div>' +
+            '<div><label for="exp-desc">Description</label><input id="exp-desc" class="input" placeholder="e.g. Deposit for hall" value="' + esc(form.description) + '" /></div>' +
+            '<div><label for="exp-amount">Amount (₹)</label><input id="exp-amount" class="input" inputmode="numeric" placeholder="0" value="' + esc(form.amount) + '" /></div>' +
+          '</div>' +
+          (state.expError ? '<div class="error-text">' + esc(state.expError) + '</div>' : "") +
+          '<div class="modal-actions">' +
+            '<button class="btn secondary" id="close-add-expense">Cancel</button>' +
+            '<button class="btn" id="submit-expense">' + (editing ? "Save changes" : "Add expense") + '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  // ---------------------------------------------------------------- organizer
+
+  function organizerHTML() {
+    var ev = state.event;
+    return (
+      '<div>' +
+        '<div class="section-head"><div class="h-heading">Organizer tools</div><button class="btn secondary" id="lock-admin">Lock</button></div>' +
+
+        '<div class="card">' +
+          '<div class="card-eyebrow">Add a classmate</div>' +
+          '<div class="field-group">' +
+            '<div><label for="new-member-name">Name</label><input id="new-member-name" class="input" /></div>' +
+            '<div><label for="new-member-phone">Phone</label><input id="new-member-phone" class="input" /></div>' +
+            '<button class="btn" id="new-member-submit">Add</button>' +
+            (state.memberMsg ? '<div class="error-text">' + esc(state.memberMsg) + '</div>' : "") +
+          '</div>' +
+        '</div>' +
+
+        '<div class="card">' +
+          '<div class="card-eyebrow">Event settings</div>' +
+          '<div class="field-group">' +
+            '<div><label for="ev-name">Name</label><input id="ev-name" class="input" value="' + esc(ev.name || "") + '" /></div>' +
+            '<div><label for="ev-venue">Venue</label><input id="ev-venue" class="input" value="' + esc(ev.venue || "") + '" /></div>' +
+            '<div><label for="ev-maps">Google Maps link</label><input id="ev-maps" class="input" placeholder="https://maps.app.goo.gl/…" value="' + esc(ev.maps_url || "") + '" /></div>' +
+            '<div><label for="ev-date">Date</label><input id="ev-date" type="date" class="input" value="' + esc(ev.event_date || "") + '" /></div>' +
+            '<div><label for="ev-amount">Contribution amount</label><input id="ev-amount" type="number" min="0" class="input" value="' + esc(ev.contribution_amount || "") + '" /></div>' +
+            '<div><label for="ev-payment-phone">Payment contacts</label>' +
+              '<textarea id="ev-payment-phone" class="input" rows="3" placeholder="One per line, e.g.&#10;Chandu: 8010106379@ybl&#10;Deva: 9912648687">' + esc(ev.payment_phone || "") + '</textarea>' +
+            '</div>' +
+            '<div><label for="ev-welcome">Welcome note (shown as a pop-up after sign-in)</label><textarea id="ev-welcome" class="input">' + esc(ev.welcome_note || "") + '</textarea></div>' +
+            '<div><label for="ev-newpin">New admin PIN</label><input id="ev-newpin" class="input" placeholder="leave blank to keep" /></div>' +
+            '<button class="btn" id="ev-save">Save event settings</button>' +
+            (state.eventMsg ? '<div class="error-text">' + esc(state.eventMsg) + '</div>' : "") +
+          '</div>' +
+        '</div>' +
+
+        '<div class="card"><div style="font-size:13px;opacity:0.8;">Payment access (who can mark paid/unpaid) is granted per-person by the site owner directly — it\'s not something anyone can change from here. Ask them if you need it.</div></div>' +
+
+        '<div class="card">' +
+          '<div class="card-eyebrow">Payment activity</div>' +
+          '<div id="payment-log-list">' + paymentLogHTML() + '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function paymentLogHTML() {
+    if (state.paymentLogError) return '<div class="error-text">' + esc(state.paymentLogError) + '</div>';
+    if (state.paymentLog === null) return '<div class="empty-note">Loading…</div>';
+    if (!state.paymentLog.length) return '<div class="empty-note">No payment changes logged yet.</div>';
+    return state.paymentLog.map(function (entry) {
+      var action = entry.paid ? "marked paid" : "marked unpaid";
+      return (
+        '<div class="list-row" style="align-items:flex-start;">' +
+          '<div class="main">' +
+            '<div class="name">' + esc(entry.changed_by_name) + ' ' + action + ' ' + esc(entry.target_member_name) + '</div>' +
+            '<div class="sub">' + money(entry.amount) + ' · ' + esc(String(entry.created_at || "").slice(0, 16).replace("T", " ")) + '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+  }
+
+  async function loadPaymentLog() {
+    try {
+      var data = await adminApi("/api/admin/payment-log", null, "GET");
+      state.paymentLog = data.log || [];
+      state.paymentLogError = "";
+    } catch (err) {
+      state.paymentLogError = err.message;
+    }
+    var container = document.getElementById("payment-log-list");
+    if (container) container.innerHTML = paymentLogHTML();
+  }
+
+  // ---------------------------------------------------------------- todo
+
+  function todoHTML(adminUnlocked) {
+    var cols = [["planned", "Planned"], ["in_progress", "In progress"], ["dropped", "Dropped"]];
+    return (
+      '<div>' +
+        (adminUnlocked ?
+          '<div class="card">' +
+            '<div class="card-eyebrow">Add a todo</div>' +
+            '<div class="field-group">' +
+              '<input id="new-todo-title" class="input" placeholder="e.g. Book the DJ" value="' + esc(state.newTodoTitle) + '" />' +
+              (state.todoError ? '<div class="error-text">' + esc(state.todoError) + '</div>' : "") +
+              '<button class="btn" id="new-todo-submit">Add to Planned</button>' +
+            '</div>' +
+          '</div>'
+        : "") +
+        cols.map(function (col) {
+          var items = state.todos.filter(function (t) { return t.status === col[0]; });
+          return (
+            '<div class="todo-col">' +
+              '<div class="todo-col-head"><span class="dot ' + col[0] + '"></span><span class="h-heading">' + col[1] + ' (' + items.length + ')</span></div>' +
+              (items.length ? items.map(function (t) { return todoItemHTML(t, col[0], adminUnlocked); }).join("") : '<div class="empty-note">Nothing here yet.</div>') +
+            '</div>'
+          );
+        }).join("") +
+      '</div>'
+    );
+  }
+
+  function todoItemHTML(t, currentStatus, adminUnlocked) {
+    if (!adminUnlocked) {
+      return '<div class="todo-item"><div class="title">' + esc(t.title) + '</div></div>';
+    }
+    var others = [["planned", "Planned"], ["in_progress", "In progress"], ["dropped", "Dropped"]].filter(function (c) { return c[0] !== currentStatus; });
+    return (
+      '<div class="todo-item">' +
+        '<div class="title">' + esc(t.title) + '</div>' +
+        '<select class="input status-select" data-todo-move="' + t.id + '">' +
+          '<option value="">Move to…</option>' +
+          others.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join("") +
+        '</select>' +
+        '<button class="remove" data-todo-delete="' + t.id + '">Delete</button>' +
+      '</div>'
+    );
+  }
+
+  // ---------------------------------------------------------------- misc
+
+  function miscSections() {
+    return [
+      { type: "proposal", title: "Propose an event", sub: "Got an idea for the next get-together? Drop it here.", placeholder: "e.g. Let's do a New Year's meetup next…" },
+      { type: "kindwords", title: "Kind words", sub: "A little guestbook for the group.", placeholder: "Say something nice…" },
+      { type: "feedback", title: "Anonymous feedback / ideas", sub: "No name attached — say what's on your mind.", placeholder: "Anything you'd want the organizers to know…" },
+    ];
+  }
+
+  function miscHTML() {
+    if (state.miscView === "pocs") return pocPageHTML();
+    if (state.miscView && state.miscView !== "hub") return miscSectionPageHTML(state.miscView);
+    return miscHubHTML();
+  }
+
+  function miscHubHTML() {
+    return (
+      '<div>' +
+        '<button class="card nav-card" data-misc-view="pocs">' +
+          '<div class="section-head" style="margin-bottom:0;">' +
+            '<div class="h-heading" style="font-size:16px;">Points of contact</div>' +
+            '<span class="link-btn" style="pointer-events:none;">' + state.pocs.length + ' →</span>' +
+          '</div>' +
+          '<div style="font-size:13px;opacity:0.7;margin-top:4px;">Who to reach out to for each part of the reunion — venue, catering, transport, and more.</div>' +
+        '</button>' +
+        miscSections().map(function (s) {
+          var count = state.posts.filter(function (p) { return p.type === s.type; }).length;
+          return (
+            '<button class="card nav-card" data-misc-view="' + s.type + '">' +
+              '<div class="section-head" style="margin-bottom:0;">' +
+                '<div class="h-heading" style="font-size:16px;">' + esc(s.title) + '</div>' +
+                '<span class="link-btn" style="pointer-events:none;">' + count + ' →</span>' +
+              '</div>' +
+              '<div style="font-size:13px;opacity:0.7;margin-top:4px;">' + esc(s.sub) + '</div>' +
+            '</button>'
+          );
+        }).join("") +
+      '</div>'
+    );
+  }
+
+  function miscSectionPageHTML(type) {
+    var section = miscSections().find(function (s) { return s.type === type; });
+    if (!section) return miscHubHTML();
+    return (
+      '<div>' +
+        '<button class="link-btn" id="misc-back" style="margin-bottom:14px;display:block;">← Misc &amp; feedback</button>' +
+        miscSectionHTML(section, currentUser()) +
+      '</div>'
+    );
+  }
+
+  function pocPageHTML() {
+    var adminUnlocked = !!state.adminPin;
+    var byCategory = {};
+    state.pocs.forEach(function (p) {
+      if (!byCategory[p.category]) byCategory[p.category] = [];
+      byCategory[p.category].push(p);
+    });
+    var categories = Object.keys(byCategory).sort(function (a, b) { return a.localeCompare(b); });
+    return (
+      '<div>' +
+        '<button class="link-btn" id="misc-back" style="margin-bottom:14px;display:block;">← Misc &amp; feedback</button>' +
+        '<div class="h-heading" style="font-size:16px;margin-bottom:4px;">Points of contact</div>' +
+        '<div class="misc-section-sub">Who to reach out to for each part of the reunion.</div>' +
+        (adminUnlocked ?
+          '<div class="card">' +
+            '<div class="card-eyebrow">Add a contact</div>' +
+            '<div class="field-group">' +
+              '<div><label for="poc-category">Category</label><input id="poc-category" class="input" placeholder="e.g. Venue, Catering, Transport" value="' + esc(state.newPoc.category) + '" /></div>' +
+              '<div><label for="poc-name">Name</label><input id="poc-name" class="input" value="' + esc(state.newPoc.name) + '" /></div>' +
+              (state.pocError ? '<div class="error-text">' + esc(state.pocError) + '</div>' : "") +
+              '<button class="btn" id="poc-submit">Add</button>' +
+            '</div>' +
+          '</div>'
+        : "") +
+        (categories.length ? categories.map(function (cat) {
+          return (
+            '<div class="misc-section">' +
+              '<div class="misc-section-head">' + esc(cat) + '</div>' +
+              byCategory[cat].map(function (p) {
+                return (
+                  '<div class="list-row">' +
+                    '<div class="main"><div class="name">' + esc(p.name) + '</div></div>' +
+                    (adminUnlocked ? '<button class="remove" data-poc-delete="' + p.id + '">Delete</button>' : "") +
+                  '</div>'
+                );
+              }).join("") +
+            '</div>'
+          );
+        }).join("") : '<div class="empty-note">No contacts added yet.</div>') +
+      '</div>'
+    );
+  }
+
+  function miscSectionHTML(s, user) {
+    var form = state.boardForms[s.type];
+    var posts = state.posts.filter(function (p) { return p.type === s.type; });
+    var adminUnlocked = !!state.adminPin;
+    var votable = s.type !== "kindwords";
+    var myVotes = votable ? readMyVotes() : {};
+    return (
+      '<div class="misc-section">' +
+        '<div class="misc-section-head">' + esc(s.title) + '</div>' +
+        '<div class="misc-section-sub">' + esc(s.sub) + '</div>' +
+        (posts.length ? posts.map(function (p) {
+          var mine = myVotes[p.id] || 0;
+          var score = (p.upvotes || 0) - (p.downvotes || 0);
+          return (
+            '<div class="board-post">' +
+              '<div class="msg-text">' + esc(p.message) + '</div>' +
+              '<div class="meta">' +
+                (votable ?
+                  '<div class="vote-row">' +
+                    '<button class="vote-btn' + (mine === 1 ? " active-up" : "") + '" data-vote-post="' + p.id + '" data-vote-value="1">▲</button>' +
+                    '<span class="vote-score">' + score + '</span>' +
+                    '<button class="vote-btn' + (mine === -1 ? " active-down" : "") + '" data-vote-post="' + p.id + '" data-vote-value="-1">▼</button>' +
+                  '</div>'
+                : '<span></span>') +
+                '<span class="author">' + (p.author_name ? esc(p.author_name) : "Anonymous") + '</span>' +
+                (adminUnlocked ? '<button class="remove" data-post-delete="' + p.id + '">Delete</button>' : "") +
+              '</div>' +
+            '</div>'
+          );
+        }).join("") : '<div class="empty-note">Nothing here yet.</div>') +
+        (user ?
+          '<div class="field-group" style="margin-top:10px;">' +
+            '<textarea class="input" data-board-input="' + s.type + '" placeholder="' + esc(s.placeholder) + '">' + esc(form.text) + '</textarea>' +
+            (form.error ? '<div class="error-text">' + esc(form.error) + '</div>' : "") +
+            '<button class="btn secondary" data-board-submit="' + s.type + '">Post</button>' +
+          '</div>'
+        : '<div class="empty-note">Sign in to post here.</div>') +
+      '</div>'
+    );
+  }
+
+  // ---------------------------------------------------------------- about
+
+  function aboutHowItemHTML(title, desc) {
+    return (
+      '<div>' +
+        '<div style="font-size:14px;font-weight:600;margin-bottom:2px;">' + esc(title) + '</div>' +
+        '<div style="font-size:13px;opacity:0.75;">' + esc(desc) + '</div>' +
+      '</div>'
+    );
+  }
+
+  function aboutHTML() {
+    var ev = state.event;
+    var subParts = [];
+    if (ev.venue) subParts.push(ev.venue);
+    if (ev.event_date) subParts.push(formatEventDate(ev.event_date));
+    return (
+      '<div>' +
+        '<div class="card">' +
+          '<div class="card-eyebrow">About this reunion</div>' +
+          '<div class="h-heading" style="font-size:18px;">' + esc(ev.name || "Reunion") + '</div>' +
+          (subParts.length ? '<div style="font-size:13px;opacity:0.8;margin-top:4px;">' + esc(subParts.join(" · ")) + '</div>' : "") +
+          '<p style="font-size:13px;opacity:0.85;margin-top:10px;">This site helps everyone RSVP, see who\'s coming, split the cost fairly, and stay in the loop before the big day.</p>' +
+        '</div>' +
+
+        '<div class="card">' +
+          '<div class="card-eyebrow">How to use this site</div>' +
+          '<div class="field-group" style="gap:14px;">' +
+            aboutHowItemHTML("Home", "Event details at a glance, one-tap RSVP, your contribution status, and the phone number to pay.") +
+            aboutHowItemHTML("Attendees", "See who's coming, search by name, and filter by RSVP status.") +
+            aboutHowItemHTML("Expenses", "Spending broken down by category, plus the running budget balance.") +
+            aboutHowItemHTML("Todo list", "What's planned, in progress, or dropped for the event.") +
+            aboutHowItemHTML("Misc & feedback", "Propose ideas for future get-togethers, leave kind words, or share anonymous feedback.") +
+          '</div>' +
+        '</div>' +
+
+        '<div style="text-align:center;padding:24px 0 8px;font-size:12px;opacity:0.55;">Developed and managed by Sai Verma, for everyone.</div>' +
+      '</div>'
+    );
+  }
+
+  // ---------------------------------------------------------------- pin dialog
+
+  function pinDialogHTML() {
+    return (
+      '<div class="overlay" id="pin-overlay">' +
+        '<div class="modal">' +
+          '<div class="modal-title">Organizer sign-in</div>' +
+          '<div style="font-size:13px;opacity:0.75;">Enter the shared organizer PIN to log expenses, manage the todo list, and edit event settings. Marking payments paid/unpaid needs the separate Payments PIN.</div>' +
+          '<input id="pin-input" class="input" placeholder="PIN" inputmode="numeric" type="password" />' +
+          (state.pinError ? '<div class="error-text">' + esc(state.pinError) + '</div>' : "") +
+          '<div class="modal-actions">' +
+            '<button class="btn secondary" id="close-pin">Cancel</button>' +
+            '<button class="btn" id="submit-pin">Unlock</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  // ---------------------------------------------------------------- welcome dialog
+
+  function welcomeDialogHTML() {
+    var user = currentUser();
+    var note = (state.event.welcome_note || "").trim() || "So glad you're here! Can't wait to catch up with everyone.";
+    return (
+      '<div class="overlay" id="welcome-overlay">' +
+        '<div class="modal">' +
+          '<div class="modal-title">Welcome back' + (user ? ", " + esc(user.name.split(" ")[0]) : "") + '!</div>' +
+          '<div style="font-size:14px;white-space:pre-wrap;">' + esc(note) + '</div>' +
+          '<div class="modal-actions">' +
+            '<button class="btn" id="close-welcome">Let\'s go</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  // ---------------------------------------------------------------- bind
+
+  function bindShell() {
+    bindThemeToggle();
+    document.querySelectorAll("[data-nav]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        state.screen = btn.getAttribute("data-nav");
+        if (state.screen === "misc") state.miscView = "hub";
+        state.menuOpen = false;
+        render();
+      });
+    });
+    document.getElementById("switch-user").addEventListener("click", function () {
+      writeIdentity(null);
+      state.screen = "home";
+      render();
+    });
+    document.getElementById("menu-toggle").addEventListener("click", function () {
+      state.menuOpen = !state.menuOpen;
+      render();
+    });
+    var backdrop = document.getElementById("menu-backdrop");
+    if (backdrop) backdrop.addEventListener("click", function () { state.menuOpen = false; render(); });
+
+    var openPinBtn = document.getElementById("open-pin");
+    if (openPinBtn) openPinBtn.addEventListener("click", openPin);
+    var openPinBtn2 = document.getElementById("open-pin-2");
+    if (openPinBtn2) openPinBtn2.addEventListener("click", openPin);
+
+    if (state.screen === "home") bindHome();
+    if (state.screen === "attendees") bindAttendees();
+    if (state.screen === "expenses") bindExpenses();
+    if (state.screen === "todo") bindTodo();
+    if (state.screen === "misc") bindMisc();
+    if (state.screen === "organizer") bindOrganizer();
+    if (state.pinDialogOpen) bindPinDialog();
+    if (state.addExpenseOpen) bindExpenseDialog();
+    if (state.showWelcome) bindWelcomeDialog();
+  }
+
+  function openPin() { state.pinDialogOpen = true; state.pinError = ""; render(); }
+
+  function bindHome() {
+    var user = currentUser();
+    document.querySelectorAll("[data-rsvp]").forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        if (!user) return;
+        var status = btn.getAttribute("data-rsvp");
+        btn.disabled = true;
+        try {
+          await api("/api/rsvp", { method: "POST", body: { member_id: user.id, status: status, phone_last4: state.identity.phoneLast4 } });
+          await loadEvent();
+        } catch (err) {
+          alert(err.message);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
+    document.querySelectorAll("[data-copy-value]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var value = btn.getAttribute("data-copy-value");
+        navigator.clipboard && navigator.clipboard.writeText(value || "").catch(function () {});
+        var original = btn.textContent;
+        btn.textContent = "Copied";
+        setTimeout(function () { btn.textContent = original; }, 1500);
+      });
+    });
+  }
+
+  function bindAttendees() {
+    var search = document.getElementById("attendee-search");
+    search.addEventListener("input", function () {
+      state.attendeeSearch = search.value;
+      document.getElementById("attendee-list").innerHTML = attendeeListHTML();
+      bindAttendeeListActions();
+    });
+    document.querySelectorAll("[data-attendee-filter]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        state.attendeeFilter = btn.getAttribute("data-attendee-filter");
+        render();
+      });
+    });
+    bindAttendeeListActions();
+  }
+  function bindAttendeeListActions() {
+    document.querySelectorAll("[data-toggle-paid]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var id = Number(btn.getAttribute("data-toggle-paid"));
+        var member = state.members.find(function (m) { return m.id === id; });
+        if (!member) return;
+        performPaymentToggle(id, !member.paid);
+      });
+    });
+  }
+
+  // No PIN involved: the acting member must have can_manage_payments set on
+  // their own row (grantable only via a direct DB query by the site owner —
+  // see schema.sql). device_secret implements trust-on-first-use device
+  // pinning, bound the first time this succeeds for a given person.
+  async function performPaymentToggle(memberId, nextPaid) {
+    if (!state.identity) { alert("Sign in first."); return; }
+    try {
+      var result = await api("/api/admin/payment", {
+        method: "POST",
+        headers: { "X-Admin-Pin": state.adminPin },
+        body: {
+          member_id: memberId,
+          paid: nextPaid,
+          amount: nextPaid ? contributionAmount() : 0,
+          actor_member_id: state.identity.memberId,
+          actor_phone_last4: state.identity.phoneLast4,
+          device_secret: localStorage.getItem(DEVICE_SECRET_KEY) || "",
+        },
+      });
+      if (result.device_secret) localStorage.setItem(DEVICE_SECRET_KEY, result.device_secret);
+      await loadEvent();
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
+  function bindExpenses() {
+    var openBtn = document.getElementById("open-add-expense");
+    if (openBtn) openBtn.addEventListener("click", function () {
+      state.addExpenseOpen = true;
+      state.editingExpenseId = null;
+      state._expForm = { category: "Venue", description: "", amount: "" };
+      state.expError = "";
+      render();
+    });
+    document.querySelectorAll("[data-edit-expense]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var id = Number(btn.getAttribute("data-edit-expense"));
+        var e = state.expenses.find(function (x) { return x.id === id; });
+        if (!e) return;
+        state.addExpenseOpen = true;
+        state.editingExpenseId = id;
+        state._expForm = { category: e.category || "Venue", description: e.description || "", amount: String(e.amount || "") };
+        state.expError = "";
+        render();
+      });
+    });
+    document.querySelectorAll("[data-delete-expense]").forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        if (!confirm("Delete this expense?")) return;
+        var id = btn.getAttribute("data-delete-expense");
+        try {
+          await adminApi("/api/admin/expense?id=" + id, null, "DELETE");
+          await loadEvent();
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+  }
+
+  function bindExpenseDialog() {
+    document.getElementById("close-add-expense").addEventListener("click", function () {
+      state.addExpenseOpen = false;
+      render();
+    });
+    document.getElementById("submit-expense").addEventListener("click", async function () {
+      var category = document.getElementById("exp-category").value;
+      var description = document.getElementById("exp-desc").value.trim();
+      var amount = parseInt(document.getElementById("exp-amount").value, 10);
+      if (!description) { state.expError = "Add a short description."; return render(); }
+      if (!amount || amount <= 0) { state.expError = "Enter an amount greater than zero."; return render(); }
+      var btn = document.getElementById("submit-expense");
+      btn.disabled = true;
+      try {
+        if (state.editingExpenseId) {
+          await adminApi("/api/admin/expense?id=" + state.editingExpenseId, null, "DELETE");
+        }
+        await adminApi("/api/admin/expense", { category: category, description: description, amount: amount });
+        state.addExpenseOpen = false;
+        state.editingExpenseId = null;
+        state.expError = "";
+        await loadEvent();
+      } catch (err) {
+        state.expError = err.message;
+        render();
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
+  function bindOrganizer() {
+    loadPaymentLog();
+    document.getElementById("lock-admin").addEventListener("click", function () {
+      state.adminPin = "";
+      sessionStorage.removeItem(PIN_KEY);
+      state.screen = "home";
+      render();
+    });
+    document.getElementById("new-member-submit").addEventListener("click", async function () {
+      var name = document.getElementById("new-member-name").value.trim();
+      var phone = document.getElementById("new-member-phone").value.trim();
+      if (!name) { state.memberMsg = "Name is required."; return render(); }
+      var btn = document.getElementById("new-member-submit");
+      btn.disabled = true;
+      try {
+        await adminApi("/api/admin/member", { name: name, phone: phone || null });
+        state.memberMsg = "";
+        await loadEvent();
+      } catch (err) {
+        state.memberMsg = err.message;
+        render();
+      } finally {
+        btn.disabled = false;
+      }
+    });
+    document.getElementById("ev-save").addEventListener("click", async function () {
+      var body = {
+        name: document.getElementById("ev-name").value.trim(),
+        venue: document.getElementById("ev-venue").value.trim(),
+        maps_url: document.getElementById("ev-maps").value.trim(),
+        event_date: document.getElementById("ev-date").value,
+        contribution_amount: Number(document.getElementById("ev-amount").value) || 0,
+        payment_phone: document.getElementById("ev-payment-phone").value.trim(),
+        welcome_note: document.getElementById("ev-welcome").value.trim(),
+      };
+      var newPin = document.getElementById("ev-newpin").value.trim();
+      if (newPin) body.new_admin_pin = newPin;
+      var btn = document.getElementById("ev-save");
+      btn.disabled = true;
+      try {
+        await adminApi("/api/admin/event", body);
+        if (newPin) {
+          state.adminPin = newPin;
+          sessionStorage.setItem(PIN_KEY, newPin);
+        }
+        state.eventMsg = "";
+        await loadEvent();
+      } catch (err) {
+        state.eventMsg = err.message;
+        render();
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
+  function bindTodo() {
+    var addBtn = document.getElementById("new-todo-submit");
+    if (addBtn) {
+      addBtn.addEventListener("click", async function () {
+        var input = document.getElementById("new-todo-title");
+        var title = input.value.trim();
+        if (!title) { state.todoError = "Enter a title first."; return render(); }
+        addBtn.disabled = true;
+        try {
+          await adminApi("/api/admin/todo", { title: title });
+          state.newTodoTitle = "";
+          state.todoError = "";
+          await loadEvent();
+        } catch (err) {
+          state.todoError = err.message;
+          render();
+        } finally {
+          addBtn.disabled = false;
+        }
+      });
+    }
+    document.querySelectorAll("[data-todo-move]").forEach(function (sel) {
+      sel.addEventListener("change", async function () {
+        var id = Number(sel.getAttribute("data-todo-move"));
+        var status = sel.value;
+        if (!status) return;
+        sel.disabled = true;
+        try {
+          await adminApi("/api/admin/todo", { id: id, status: status });
+          await loadEvent();
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+    document.querySelectorAll("[data-todo-delete]").forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        if (!confirm("Delete this todo?")) return;
+        var id = btn.getAttribute("data-todo-delete");
+        try {
+          await adminApi("/api/admin/todo?id=" + id, null, "DELETE");
+          await loadEvent();
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+  }
+
+  function bindMisc() {
+    var backBtn = document.getElementById("misc-back");
+    if (backBtn) backBtn.addEventListener("click", function () { state.miscView = "hub"; render(); });
+    document.querySelectorAll("[data-misc-view]").forEach(function (btn) {
+      btn.addEventListener("click", function () { state.miscView = btn.getAttribute("data-misc-view"); render(); });
+    });
+    var pocSubmitBtn = document.getElementById("poc-submit");
+    if (pocSubmitBtn) {
+      pocSubmitBtn.addEventListener("click", async function () {
+        var category = document.getElementById("poc-category").value;
+        var name = document.getElementById("poc-name").value;
+        state.newPoc = { category: category, name: name };
+        if (!category.trim() || !name.trim()) { state.pocError = "Category and name are required."; return render(); }
+        pocSubmitBtn.disabled = true;
+        try {
+          await adminApi("/api/admin/poc", { category: category.trim(), name: name.trim() });
+          state.newPoc = { category: "", name: "" };
+          state.pocError = "";
+          await loadEvent();
+        } catch (err) {
+          state.pocError = err.message;
+          render();
+        } finally {
+          pocSubmitBtn.disabled = false;
+        }
+      });
+    }
+    document.querySelectorAll("[data-poc-delete]").forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        if (!confirm("Delete this contact?")) return;
+        var id = btn.getAttribute("data-poc-delete");
+        try {
+          await adminApi("/api/admin/poc?id=" + id, null, "DELETE");
+          await loadEvent();
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+    document.querySelectorAll("[data-board-input]").forEach(function (ta) {
+      ta.addEventListener("input", function () {
+        var type = ta.getAttribute("data-board-input");
+        state.boardForms[type].text = ta.value;
+      });
+    });
+    document.querySelectorAll("[data-board-submit]").forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        var type = btn.getAttribute("data-board-submit");
+        var form = state.boardForms[type];
+        var text = form.text.trim();
+        if (!text) { form.error = "Write something first."; return render(); }
+        if (!state.identity) { form.error = "Sign in first."; return render(); }
+        var body = {
+          type: type,
+          message: text,
+          member_id: state.identity.memberId,
+          phone_last4: state.identity.phoneLast4,
+        };
+        btn.disabled = true;
+        try {
+          await api("/api/board", { method: "POST", body: body });
+          form.text = "";
+          form.error = "";
+          await loadEvent();
+        } catch (err) {
+          form.error = err.message;
+          render();
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
+    document.querySelectorAll("[data-post-delete]").forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        if (!confirm("Delete this post?")) return;
+        var id = btn.getAttribute("data-post-delete");
+        try {
+          await adminApi("/api/board?id=" + id, null, "DELETE");
+          await loadEvent();
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+    document.querySelectorAll("[data-vote-post]").forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        if (!state.identity) { alert("Sign in first."); return; }
+        var postId = Number(btn.getAttribute("data-vote-post"));
+        var clicked = Number(btn.getAttribute("data-vote-value"));
+        var myVotes = readMyVotes();
+        var current = myVotes[postId] || 0;
+        var next = current === clicked ? 0 : clicked;
+        btn.disabled = true;
+        try {
+          await api("/api/board-vote", {
+            method: "POST",
+            body: { post_id: postId, vote: next, member_id: state.identity.memberId, phone_last4: state.identity.phoneLast4 },
+          });
+          writeMyVote(postId, next);
+          await loadEvent();
+        } catch (err) {
+          alert(err.message);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
+  }
+
+  function bindPinDialog() {
+    document.getElementById("close-pin").addEventListener("click", function () {
+      state.pinDialogOpen = false;
+      render();
+    });
+    document.getElementById("submit-pin").addEventListener("click", async function () {
+      var pin = document.getElementById("pin-input").value;
+      if (!pin) return;
+      var btn = document.getElementById("submit-pin");
+      btn.disabled = true;
+      var prevPin = state.adminPin;
+      state.adminPin = pin;
+      try {
+        await adminApi("/api/admin/verify", null, "GET");
+        sessionStorage.setItem(PIN_KEY, pin);
+        state.pinDialogOpen = false;
+        state.pinError = "";
+        render();
+      } catch (err) {
+        state.adminPin = prevPin;
+        state.pinError = err.message;
+        render();
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
+  function bindWelcomeDialog() {
+    document.getElementById("close-welcome").addEventListener("click", function () {
+      state.showWelcome = false;
+      render();
+    });
+  }
+
+  loadEvent();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+name = "school-reunion"
+compatibility_date = "2026-07-20"
+pages_build_output_dir = "public"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "reunion-db"
+database_id = "f98474a3-b96f-4f0c-959b-f0c7ee9c0aef"
